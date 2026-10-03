@@ -4,13 +4,13 @@
 
 | Campo | Valor |
 | --- | --- |
-| Documento | Product Requirements Document (PRD) v1.0 — MVP |
+| Documento | Product Requirements Document (PRD) v1.1 — MVP |
 | Produto | HoraUtil |
 | Status | Aprovado para implementação |
-| Stack | React Native (Expo) · Fastify (Node.js) · TypeScript · PostgreSQL + Drizzle ORM |
+| Stack | Kotlin (Android Nativo) · Jetpack Compose · Retrofit · Fastify (Node.js) · TypeScript · PostgreSQL + Drizzle ORM |
 | Time | 5 desenvolvedores |
 | Duração estimada do MVP | 8 semanas (4 sprints de 2 semanas) |
-| Última atualização | 2026-10-01 |
+| Última atualização | 2026-10-02 |
 
 ---
 
@@ -164,7 +164,7 @@ O diferencial do produto não é o agendamento em si, mas o **modelo de confian�
 
 #### Dev 1 — Autenticação e Perfil
 
-| # | Funcionalidade | Descrição | Telas (Expo) | Endpoints (Fastify) | Tabelas |
+| # | Funcionalidade | Descrição | Telas (Compose) | Endpoints (Fastify) | Tabelas |
 | --- | --- | --- | --- | --- | --- |
 | F1.1 | Cadastro | E-mail + senha + nome. Regras de senha forte, e-mail único | `SignUp` | `POST /auth/register` | `users` |
 | F1.2 | Login | E-mail + senha com JWT de acesso + refresh | `Login` | `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout` | `users`, `refresh_tokens` |
@@ -187,7 +187,7 @@ O diferencial do produto não é o agendamento em si, mas o **modelo de confian�
 
 #### Dev 2 — Busca & Match
 
-| # | Funcionalidade | Descrição | Telas (Expo) | Endpoints (Fastify) | Tabelas |
+| # | Funcionalidade | Descrição | Telas (Compose) | Endpoints (Fastify) | Tabelas |
 | --- | --- | --- | --- | --- | --- |
 | F2.1 | Catálogo de categorias | Árvore de categorias de habilidade (ex.: Música → Violão; Tecnologia → Programação → Node.js) | `CategoryPicker` | `GET /categories` | `categories` |
 | F2.2 | Busca por categoria | Usuário escolhe "quero aprender: Violão" e vê quem ensina isso | `Search` | `GET /search/teachers?skillId=&city=` | `user_skills`, `users`, `reviews` |
@@ -213,7 +213,7 @@ Todos os pesos ficam em configuração (`MATCHING_WEIGHTS`), permitindo tuning s
 
 #### Dev 3 — Módulo de Agendamento
 
-| # | Funcionalidade | Descrição | Telas (Expo) | Endpoints (Fastify) | Tabelas |
+| # | Funcionalidade | Descrição | Telas (Compose) | Endpoints (Fastify) | Tabelas |
 | --- | --- | --- | --- | --- | --- |
 | F3.1 | Calendário de disponibilidade | Exibição mensal/semanal com slots livres, ocupados e indisponíveis | `Calendar` | `GET /users/:id/availability/slots?from=&to=` | `availability_slots`, `bookings` |
 | F3.2 | Solicitação de sessão | Aluno escolhe data, hora, duração e envia mensagem de contexto | `BookingRequest` | `POST /bookings` | `bookings` |
@@ -249,7 +249,7 @@ confirmed  ──check-in timeout (30 min)──► no_show
 
 #### Dev 4 — Sistema de Carteira/Créditos
 
-| # | Funcionalidade | Descrição | Telas (Expo) | Endpoints (Fastify) | Tabelas |
+| # | Funcionalidade | Descrição | Telas (Compose) | Endpoints (Fastify) | Tabelas |
 | --- | --- | --- | --- | --- | --- |
 | F4.1 | Crédito de boas-vindas | Saldo inicial ao concluir onboarding | — (automático) | `POST /wallet/welcome-credit` | `wallet_entries` |
 | F4.2 | Saldo atual | Saldo disponível em minutos, calculado a partir do ledger | `WalletCard` (Home) | `GET /me/wallet` | `wallet_entries` |
@@ -276,7 +276,7 @@ Todo lançamento é append-only e carrega `balance_after` para auditoria. Corre�
 
 #### Dev 5 — Avaliações & Reviews
 
-| # | Funcionalidade | Descrição | Telas (Expo) | Endpoints (Fastify) | Tabelas |
+| # | Funcionalidade | Descrição | Telas (Compose) | Endpoints (Fastify) | Tabelas |
 | --- | --- | --- | --- | --- | --- |
 | F5.1 | Formulário pós-aula | Modal com nota (1–5 estrelas) + comentário textual (10–500 chars) | `RateSession` | `POST /bookings/:id/review` | `reviews` |
 | F5.2 | Regra de elegibilidade | Só quem participou da sessão `completed` pode avaliar, 1 vez por sessão, em até 7 dias | — | (server-side) | `reviews`, `bookings` |
@@ -542,11 +542,11 @@ flowchart TD
 | --- | --- | --- |
 | NF-P01 | Tempo de resposta da API (leitura) | **p95 < 300 ms**, p99 < 800 ms |
 | NF-P02 | Tempo de resposta da API (escrita) | p95 < 500 ms |
-| NF-P03 | App cold start (iOS/Android) | < 2,5 s em dispositivos mid-range |
-| NF-P04 | LCP (Largest Contentful Paint) das telas | < 2,5 s em 4G |
+| NF-P03 | App cold start (Android) | < 2,5 s em dispositivos mid-range |
+| NF-P04 | Tempo de primeira renderização das telas (Compose) | < 2,5 s em 4G |
 | NF-P05 | Tempo de resposta da busca | p95 < 400 ms com até 100 mil perfis indexados |
 | NF-P06 | Paginação | Todas as listagens usam **cursor pagination** (nunca `OFFSET`) |
-| NF-P07 | Tamanho do bundle | APK/IPA < 60 MB |
+| NF-P07 | Tamanho do bundle | APK < 60 MB |
 | NF-P08 | Uploads de imagem | Compressão client-side para no máximo 1080 px e 85% de qualidade |
 
 ### 6.2 Segurança
@@ -598,7 +598,7 @@ flowchart TD
 | NF-Q02 | Testes unitários: **Vitest** (compartilhado entre API e pacotes) |
 | NF-Q03 | Testes de integração de API: `supertest`/`inject` com Postgres de teste (Testcontainers) |
 | NF-Q04 | Testes E2E dos fluxos críticos: cadastro → match → agendamento → conclusão → avaliação |
-| NF-Q05 | Lint + typecheck obrigatórios no CI; **zero** erro de TypeScript em `main` |
+| NF-Q05 | Lint + typecheck obrigatórios no CI; **zero** erro de TypeScript na API e **ktlint/detekt** limpo no app Android em `main` |
 | NF-Q06 | Conventional Commits + PR review obrigatório de 1 par para código de domínio (wallet, booking) |
 
 ### 6.6 Usabilidade e Acessibilidade
@@ -607,7 +607,7 @@ flowchart TD
 | --- | --- |
 | NF-UX01 | Idioma **pt-BR** como único idioma do MVP |
 | NF-UX02 | Suporte a **dark mode** seguindo configuração do sistema |
-| NF-UX03 | Alvos de toque ≥ 44×44 px (Apple HIG / Material) |
+| NF-UX03 | Alvos de toque ≥ 48×48 dp (Material Design 3) |
 | NF-UX04 | Contraste mínimo WCAG AA (4.5:1) em todos os textos |
 | NF-UX05 | Telas de erro sempre com ação de recuperação ("Tentar novamente") |
 | NF-UX06 | Estados vazios com ilustração + texto explicativo + CTA |
@@ -616,7 +616,7 @@ flowchart TD
 
 | ID | Requisito |
 | --- | --- |
-| NF-R01 | Cache local das categorias e do próprio perfil (via React Query) |
+| NF-R01 | Cache local das categorias e do próprio perfil (via Room/DataStore no app Android) |
 | NF-R02 | Fila de leitura offline: o usuário vê sua agenda e saldo em cache |
 | NF-R03 | Retry exponencial (3 tentativas) em falhas de rede no cliente |
 | NF-R04 | Degradação graciosa: sem conexão, mostrar "offline" e bloquear apenas ações de escrita |
@@ -944,20 +944,21 @@ horaUtil/
 │   │       │   └── review/      # Dev 5
 │   │       ├── shared/          # errors, middleware, config
 │   │       └── workers/         # jobs: expira crédito, expira PENDING
-│   └── mobile/                  # Expo Router + TypeScript
+│   └── mobile/                  # Kotlin (Android Nativo) + Jetpack Compose
 │       ├── app/
-│       │   ├── (auth)/          # login, signup, onboarding
-│       │   ├── (tabs)/          # home, search, agenda, wallet, profile
-│       │   └── booking/         # calendário, detalhe, avaliação
-│       └── src/
-│           ├── components/      #-ui compartilhado
-│           ├── hooks/
-│           ├── queries/         # React Query hooks
-│           └── lib/
+│       │   └── src/main/
+│       │       ├── java/com/horautil/
+│       │       │   ├── ui/           # Telas Compose (auth, tabs, booking)
+│       │       │   ├── viewmodel/    # ViewModels por feature (arquitetura MVVM)
+│       │       │   ├── data/         # Retrofit + Repositories + cache local (Room)
+│       │       │   ├── domain/       # Modelos e casos de uso
+│       │       │   └── di/           # Injeção de dependências
+│       │       └── res/              # Tema Material Design 3, strings, drawables
+│       └── build.gradle.kts
 ├── packages/
 │   ├── db/                      # Drizzle schema + migrations (owner: Dev 1)
-│   ├── contracts/               # Zod schemas compartilhados API ↔ Mobile
-│   └── ui/                      # Design tokens + componentes base
+│   ├── contracts/               # Zod schemas da API (espelhados nos DTOs Kotlin)
+│   └── ui/                      # Design tokens HoraUtil (tema Material Design 3)
 └── docs/
 ```
 
@@ -1065,7 +1066,7 @@ horaUtil/
 Um item só é considered "done" quando:
 
 - [ ] PR aprovado por 1 par (obrigatório para `wallet`, `booking`)
-- [ ] Lint e `tsc --noEmit` sem erros
+- [ ] Lint e `tsc --noEmit` (API) + `ktlint`/`detekt` (Android) sem erros
 - [ ] Testes unitários cobrindo a lógica nova (mínimo 80% no domínio)
 - [ ] Validação Zod em toda rota nova
 - [ ] Migration Drizzle gerada e aplicada sem downtime
@@ -1120,7 +1121,7 @@ Um item só é considered "done" quando:
 | Dependência | Uso | Alternativa em caso de falha |
 | --- | --- | --- |
 | Provedor de e-mail transacional (ex.: Resend/SES) | Confirmação de cadastro, reset de senha, notificações | Log em dev + feature flag de e-mail |
-| Provedor de push (ex.: Expo Push / FCM) | Lembretes e notificações de booking | Deep link ao abrir o app |
+| Provedor de push (ex.: FCM) | Lembretes e notificações de booking | Deep link ao abrir o app |
 | S3 / storage de imagens | Avatares | Armazenamento local em dev |
 
 ### 12.4 Registro de Decisões (ADR resumidas)
@@ -1138,6 +1139,7 @@ Um item só é considered "done" quando:
 | Versão | Data | Autor | Mudanças |
 | --- | --- | --- | --- |
 | 1.0 | 2026-10-01 | PM + Tech Lead | Versão inicial do PRD para o MVP do HoraUtil |
+| 1.1 | 2026-10-02 | Tech Lead | Stack mobile migrada para Kotlin (Android nativo) + Jetpack Compose + Retrofit; terminologia dos requisitos e responsabilidades adaptada ao ecossistema Android (MVVM, ViewModels, Material Design). Back-end, regras de negócio e fluxo preservados |
 
 ---
 
