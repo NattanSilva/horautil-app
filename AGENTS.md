@@ -8,11 +8,14 @@
 
 | Layer | Tech | Notes |
 |-------|------|-------|
-| Mobile | React Native (Expo Router) + TypeScript | `apps/mobile` |
-| API | Fastify + TypeScript | `apps/api` |
-| DB | PostgreSQL + Drizzle ORM | `packages/db` (shared schema) |
-| UI | Shared components | `packages/ui` |
-| Contracts | Zod schemas shared | `packages/contracts` |
+| Mobile | Kotlin (Android nativo) + Jetpack Compose (Material 3) | `apps/mobile` |
+| Networking | Retrofit + OkHttp + kotlinx.serialization | Client REST contra `/v1` |
+| Architecture (mobile) | MVVM — `ui/` + `viewmodel/` + `domain/` + `data/` + `di/` | `apps/mobile/app/src/main/java/br/com/horautil/` |
+| Cache local | Room / DataStore (categorias + perfil) | `apps/mobile/.../data/` |
+| API | Fastify (Node.js) + TypeScript | `apps/api` |
+| DB | PostgreSQL + Drizzle ORM | `packages/db` (schema compartilhado) |
+| UI | Design tokens Material 3 (`Color.kt`, `Type.kt`, `Theme.kt`) | `packages/ui` + `apps/mobile/.../ui/theme` |
+| Contracts | Zod schemas da API (espelhados nos DTOs Kotlin) | `packages/contracts` |
 | Auth | JWT (15min access) + rotating refresh tokens (30d, hashed) | Argon2id passwords |
 
 **Monorepo structure (planned):**
@@ -20,8 +23,16 @@
 horaUtil/
 ├── apps/
 │   ├── api/src/modules/{auth,profile,search,booking,wallet,review}
-│   └── mobile/app/{(auth),(tabs),booking}
-├── packages/{db,ui,contracts}
+│   └── mobile/                              # Kotlin (Android Nativo) + Jetpack Compose
+│       ├── app/src/main/java/br/com/horautil/
+│       │   ├── ui/                          # Telas Compose (auth, tabs, booking)
+│       │   ├── viewmodel/                   # ViewModels por feature (MVVM)
+│       │   ├── data/                        # Retrofit + Repositories + cache (Room)
+│       │   ├── domain/                      # Modelos e casos de uso
+│       │   └── di/                          # Injeção de dependências
+│       ├── app/src/main/res/                # Tema Material 3, strings, drawables
+│       └── build.gradle.kts
+└── packages/{db,ui,contracts}
 ```
 
 ---
@@ -39,6 +50,17 @@ horaUtil/
 - All write ops validate `user_id` from JWT (never from body)
 - Zod validation on every route; max payload 1 MB
 - Cursor pagination everywhere (no `OFFSET`)
+
+### Mobile (Android)
+- **100% Jetpack Compose** — no XML layouts, single activity, Compose Navigation
+- **MVVM**: `ui/` (stateless composables) → `viewmodel/` (StateFlow) → `domain/` (use cases) → `data/` (Retrofit + Room) → `di/` (Hilt)
+- Composable functions are **stateless** — state and events flow through a `ViewModel` exposing `StateFlow<UiState>`
+- **Design tokens only**: never hardcode hex, dp, or sp in screens — use `Color.kt`, `Type.kt`, `Theme.kt` (`br.com.horautil.ui.theme`) and the tokens in `STYLE_GUIDE.md`
+- **Networking**: Retrofit + OkHttp + kotlinx.serialization; base URL from `BuildConfig`; DTOs in `data/` map 1:1 to the Zod schemas in `packages/contracts`
+- **Auth**: access token in memory only; refresh token persisted via `EncryptedSharedPreferences`; `Authorization: Bearer` via OkHttp interceptor — never log tokens
+- **Offline/resilience**: cache categorias + perfil with Room/DataStore; retry exponencial (3×) on network failure (NF-R01..R04)
+- **Acessibilidade (NF-UX)**: pt-BR only, dark mode from system, touch targets ≥ 48×48 dp, contraste WCAG AA, estados vazios com ilustração + CTA
+- Screens mirror the artboards in `Design.pen` and the PNGs in `screens/` (375×812) — match spacing, radii, and elevation exactly
 
 ### Business Rules (high-signal)
 | Area | Rule |
@@ -60,11 +82,12 @@ horaUtil/
 - Argon2id (or bcrypt ≥12) for passwords
 
 ### Testing (NF-Q)
-- Vitest for unit tests (shared)
+- Vitest for API/packaged unit tests (shared)
 - Integration: `supertest` + Testcontainers (Postgres)
 - E2E: critical flows (signup → match → booking → completion → review)
+- Android: JUnit + `kotlinx-coroutines-test` for unit, Compose UI Test for instrumented, Room in-memory for DAO tests
 - Coverage ≥80% on `packages/db`, `wallet`, `booking` services
-- CI: lint → typecheck → test (zero TS errors on main)
+- CI: lint → typecheck → test (zero TS errors on main **and** ktlint/detekt clean on the Android app)
 
 ---
 
@@ -79,15 +102,19 @@ pnpm install
 pnpm --filter db drizzle-kit generate
 pnpm --filter db drizzle-kit migrate
 
-# Dev servers
+# API
 pnpm --filter api dev    # Fastify on :3333
-pnpm --filter mobile dev # Expo
 
-# Test
+# Mobile (Android nativo) — from apps/mobile
+./gradlew assembleDebug   # build APK
+./gradlew installDebug    # install no device/emulador
+./gradlew test             # testes unitários
+./gradlew lint ktlintCheck detekt   # lint + análise estática
+
+# Test (API)
 pnpm --filter api test
-pnpm --filter mobile test
 
-# Lint + typecheck
+# Lint + typecheck (API/pacotes)
 pnpm lint
 pnpm typecheck
 ```
@@ -96,13 +123,13 @@ pnpm typecheck
 
 ## Module Ownership (per PRD)
 
-| Module | Owner | Key Tables |
-|--------|-------|------------|
-| `auth` / `profile` | Dev 1 | `users`, `categories`, `user_skills`, `availability_slots` |
-| `search` | Dev 2 | reads above + `reviews` for rating |
-| `booking` | Dev 3 | `bookings`, `availability_slots` |
-| `wallet` | Dev 4 | `wallet_entries` (ledger) |
-| `review` | Dev 5 | `reviews` |
+| Module | Owner | Key Tables | Mobile (Compose) |
+|--------|-------|------------|------------------|
+| `auth` / `profile` | Dev 1 | `users`, `categories`, `user_skills`, `availability_slots` | Login, Cadastro, Onboarding, Perfil |
+| `search` | Dev 2 | reads above + `reviews` for rating | Explorar |
+| `booking` | Dev 3 | `bookings`, `availability_slots` | Perfil & Agendar, Agenda |
+| `wallet` | Dev 4 | `wallet_entries` (ledger) | Carteira |
+| `review` | Dev 5 | `reviews` | Review Pós-Aula |
 
 **Contract**: Dev 1 owns schema for `users`, `categories`, `user_skills`, `availability_slots`. Changes via single PR to `packages/db`.
 
@@ -128,10 +155,16 @@ pnpm typecheck
 - ❌ Don't use `OFFSET` pagination — cursor only
 - ❌ Don't create free-text categories — closed catalog from `categories` table
 - ❌ Don't expose email/phone in any API response
+- ❌ Don't hardcode colors/spacing in Composables — only design tokens from `Theme.kt`
+- ❌ Don't put the access token in DataStore/SharedPreferences — memory only; refresh token only via `EncryptedSharedPreferences`
+- ❌ Don't call the API from a Composable — go through ViewModel → use case → repository
+- ❌ Don't log tokens, e-mail, or phone (PII) — NF-S09 / LGPD
 
 ---
 
 ## References
 
-- Full PRD: `PRD.md` (business rules, API contracts, DB schema, user flows)
+- Full PRD: `PRD.md` (business rules, API contracts, DB schema, user flows) — **source of truth**
 - Design: `Design.pen` (pen.dev file — open via pencil tools)
+- Design system: `STYLE_GUIDE.md` (tokens, `Color.kt`, `Type.kt`, `Theme.kt`)
+- Screen preview: `screens/*.png` (8 telas, 375×812)

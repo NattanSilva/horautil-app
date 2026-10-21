@@ -947,7 +947,7 @@ horaUtil/
 │   └── mobile/                  # Kotlin (Android Nativo) + Jetpack Compose
 │       ├── app/
 │       │   └── src/main/
-│       │       ├── java/com/horautil/
+│       │       ├── java/br/com/horautil/
 │       │       │   ├── ui/           # Telas Compose (auth, tabs, booking)
 │       │       │   ├── viewmodel/    # ViewModels por feature (arquitetura MVVM)
 │       │       │   ├── data/         # Retrofit + Repositories + cache local (Room)

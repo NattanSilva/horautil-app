@@ -72,13 +72,16 @@ Prévia das **8 telas principais** do MVP (375×812), renderizadas a partir dos 
 
 ## Stack
 
+**Kotlin (Android Nativo) · Jetpack Compose · Retrofit · Fastify (Node.js) · TypeScript · PostgreSQL + Drizzle ORM**
+
 | Camada | Tecnologia |
 |--------|-----------|
-| Mobile | React Native (Expo Router) + TypeScript — `apps/mobile` |
-| API | Fastify + TypeScript — `apps/api` |
+| Mobile | Kotlin (Android nativo) + Jetpack Compose (Material 3) — `apps/mobile` |
+| Design System | Tokens Material 3 (`Color.kt`, `Type.kt`, `Theme.kt`) — `packages/ui` + `apps/mobile/.../ui/theme` |
+| Rede (Mobile → API) | Retrofit + OkHttp + Kotlin Serialization (REST `/v1`) |
+| API | Fastify (Node.js) + TypeScript — `apps/api` |
 | DB | PostgreSQL + Drizzle ORM — `packages/db` |
-| UI | Componentes compartilhados — `packages/ui` |
-| Contratos | Schemas Zod — `packages/contracts` |
+| Contratos | Schemas Zod (validação na borda da API) — `packages/contracts` |
 | Auth | JWT (access 15 min) + refresh rotativo (30 d, hash), Argon2id |
 
 ## Estrutura
@@ -87,9 +90,17 @@ Prévia das **8 telas principais** do MVP (375×812), renderizadas a partir dos 
 horaUtil/
 ├── apps/
 │   ├── api/src/modules/{auth,profile,search,booking,wallet,review}
-│   └── mobile/app/{(auth),(tabs),booking}
+│   └── mobile/                       # Android nativo (Kotlin + Compose)
+│       ├── app/src/main/java/br/com/horautil/
+│       │   ├── ui/                   # Telas Compose (auth, tabs, booking)
+│       │   ├── viewmodel/            # ViewModels por feature (MVVM)
+│       │   ├── data/                 # Retrofit + Repositories + cache (Room)
+│       │   ├── domain/               # Modelos e casos de uso
+│       │   └── di/                   # Injeção de dependências
+│       ├── app/src/main/res/         # Tema Material 3, strings, drawables
+│       └── build.gradle.kts
 ├── packages/{db,ui,contracts}
-├── design.pen        # Design oficial (pen.dev) — telas + Style Guide
+├── Design.pen        # Design oficial (pen.dev) — telas + Style Guide
 ├── screens/          # Preview exportada das 8 telas principais (PNG 375×812)
 ├── STYLE_GUIDE.md    # Tokens de design + tema Jetpack Compose
 └── PRD.md            # Requisitos do produto (MVP v1.0)
@@ -98,15 +109,15 @@ horaUtil/
 ## Desenvolvimento
 
 ```bash
+# API + DB
 pnpm install
-
-# DB
 pnpm --filter db drizzle-kit generate
 pnpm --filter db drizzle-kit migrate
+pnpm --filter api dev               # Fastify :3333
 
-# Dev servers
-pnpm --filter api dev       # Fastify :3333
-pnpm --filter mobile dev    # Expo
+# Mobile (Android nativo)
+cd apps/mobile && ./gradlew assembleDebug
+cd apps/mobile && ./gradlew installDebug
 
 # Qualidade
 pnpm lint
@@ -116,7 +127,7 @@ pnpm --filter api test
 
 ## Design
 
-- `design.pen` contém os 8 artboards principais (Login, Cadastro, Onboarding, Explorar, Perfil & Agendar, Agenda, Carteira, Review) em **375×812**, mais o artboard **`00 Style Guide`** em 1440×1024 com tokens e componentes.
+- `Design.pen` contém os 8 artboards principais (Login, Cadastro, Onboarding, Explorar, Perfil & Agendar, Agenda, Carteira, Review) em **375×812**, mais o artboard **`00 Style Guide`** em 1440×1024 com tokens e componentes.
 - `STYLE_GUIDE.md` documenta paleta, tipografia, espaçamento, raios de borda e inclui `Color.kt`, `Type.kt` e `Theme.kt` iniciais em Kotlin/Jetpack Compose.
 
 ## Variáveis de ambiente
