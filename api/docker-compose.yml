@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: horautil-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-horautil}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-horautil}
+      POSTGRES_DB: ${POSTGRES_DB:-horautil}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-horautil} -d ${POSTGRES_DB:-horautil}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - horautil-net
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: horautil-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      # Override for Docker network
+      DATABASE_URL: ${DATABASE_URL:-postgres://${POSTGRES_USER:-horautil}:${POSTGRES_PASSWORD:-horautil}@postgres:5432/${POSTGRES_DB:-horautil}}
+      NODE_ENV: production
+      PORT: ${PORT:-3333}
+      HOST: 0.0.0.0
+    ports:
+      - "${PORT:-3333}:3333"
+    networks:
+      - horautil-net
+
+volumes:
+  pg_data:
+
+networks:
+  horautil-net:
+    driver: bridge
