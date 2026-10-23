@@ -145,7 +145,7 @@ export function monthsBetween(from: Date, to: Date): number {
  */
 export type RefundPolicy =
   | { tier: 'full'; refundRatio: 1; reputationHit: false }
-  | { tier: 'partial'; refundRatio: BOOKING.CANCELLATION_PARTIAL_REFUND_RATIO; reputationHit: true }
+  | { tier: 'partial'; refundRatio: typeof BOOKING.CANCELLATION_PARTIAL_REFUND_RATIO; reputationHit: true }
   | { tier: 'none'; refundRatio: 0; reputationHit: true };
 
 export function refundPolicyFor(scheduledAt: Date, now = new Date()): RefundPolicy {

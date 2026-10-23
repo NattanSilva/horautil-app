@@ -6,10 +6,13 @@
  * `HttpOnly; Secure; SameSite=Strict` (NF-S13). O access token fica só na memória do app.
  */
 import type { FastifyPluginAsync } from 'fastify';
+import '@fastify/cookie';
+import '@fastify/jwt';
 
 import { env } from '../../config/env.js';
 import { refreshCookieOptions } from '../../shared/auth/tokens.js';
 import { requireAuth, requireUserId } from '../../shared/auth/guards.js';
+import { errorResponseSchema } from '../../shared/errors.js';
 import { authRateLimitConfig } from '../../plugins/security.js';
 import {
   forgotPasswordBodySchema,
@@ -36,9 +39,9 @@ import {
 export const authRoutes: FastifyPluginAsync = async (app) => {
   /** Injeta o `app.jwt` do Fastify no serviço, mantendo o serviço desacoplado do HTTP. */
   const sign: AccessTokenSigner = async ({ userId, email }) =>
-    app.jwt.sign({ sub: userId, email, typ: 'access' }, { expiresIn: env.JWT_ACCESS_TTL });
+    (app as any).jwt.sign({ sub: userId, email, typ: 'access' }, { expiresIn: env.JWT_ACCESS_TTL });
 
-  const ctxOf = (request: { ip: string; id: string; user?: { sub: string } }) => ({
+  const ctxOf = (request: any) => ({
     actorId: request.user?.sub ?? null,
     ip: request.ip,
     correlationId: request.id,
@@ -46,8 +49,8 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 
   /** Envia o refresh token no cookie HttpOnly e devolve o mesmo valor no body. */
   const sendSession = (
-    reply: { setCookie: (name: string, value: string, opts: unknown) => unknown; send: (payload: unknown) => unknown },
-    result: { refresh_token: string; [k: string]: unknown },
+    reply: any,
+    result: any,
   ) => {
     reply.setCookie(env.REFRESH_COOKIE_NAME, result.refresh_token, refreshCookieOptions(new Date()));
     return reply.send({ data: result });
@@ -66,13 +69,13 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
         body: registerBodySchema,
         response: {
           201: authResponseSchema,
-          400: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
-          429: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          409: errorResponseSchema,
+          429: errorResponseSchema,
         },
       },
     },
-    async (request, reply) => {
+    async (request: any, reply: any) => {
       const result = await registerUser(
         {
           email: request.body.email,
@@ -101,13 +104,13 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
         body: loginBodySchema,
         response: {
           200: authResponseSchema,
-          400: { $ref: 'ErrorResponse#' },
-          401: { $ref: 'ErrorResponse#' },
-          429: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          401: errorResponseSchema,
+          429: errorResponseSchema,
         },
       },
     },
-    async (request, reply) => {
+    async (request: any, reply: any) => {
       const result = await loginUser(
         { email: request.body.email, password: request.body.password },
         ctxOf(request),
@@ -131,14 +134,14 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
         body: refreshBodySchema,
         response: {
           200: authResponseSchema,
-          400: { $ref: 'ErrorResponse#' },
-          401: { $ref: 'ErrorResponse#' },
-          429: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          401: errorResponseSchema,
+          429: errorResponseSchema,
         },
       },
     },
-    async (request, reply) => {
-      const fromCookie = request.cookies[env.REFRESH_COOKIE_NAME];
+    async (request: any, reply: any) => {
+      const fromCookie = request.cookies?.[env.REFRESH_COOKIE_NAME];
       const rawToken = fromCookie ?? request.body?.refresh_token;
       if (!rawToken) {
         return reply.status(401).send({
@@ -159,12 +162,12 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
       schema: {
         tags: ['auth'],
         summary: 'Revogar a sessão atual',
-        response: { 200: logoutResponseSchema, 401: { $ref: 'ErrorResponse#' } },
+        response: { 200: logoutResponseSchema, 401: errorResponseSchema },
       },
     },
-    async (request, reply) => {
+    async (request: any, reply: any) => {
       const userId = requireUserId(request);
-      const rawToken = request.cookies[env.REFRESH_COOKIE_NAME];
+      const rawToken = request.cookies?.[env.REFRESH_COOKIE_NAME];
       await logout(rawToken, userId, ctxOf(request));
       reply.clearCookie(env.REFRESH_COOKIE_NAME, { path: '/v1/auth' });
       return { data: { revoked: true } };
@@ -181,11 +184,11 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
         summary: 'Revogar todas as sessões ("sair de todos os dispositivos")',
         response: {
           200: logoutAllResponseSchema,
-          401: { $ref: 'ErrorResponse#' },
+          401: errorResponseSchema,
         },
       },
     },
-    async (request) => {
+    async (request: any) => {
       const userId = requireUserId(request);
       const revoked = await logoutAll(userId, ctxOf(request));
       return { data: { revoked_sessions: revoked } };
@@ -204,12 +207,12 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
         body: forgotPasswordBodySchema,
         response: {
           200: genericOkResponseSchema,
-          400: { $ref: 'ErrorResponse#' },
-          429: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          429: errorResponseSchema,
         },
       },
     },
-    async (request) => {
+    async (request: any) => {
       await requestPasswordReset(request.body.email, ctxOf(request));
       return { data: { ok: true } };
     },
@@ -226,12 +229,12 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
         body: resetPasswordBodySchema,
         response: {
           200: genericOkResponseSchema,
-          400: { $ref: 'ErrorResponse#' },
-          429: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          429: errorResponseSchema,
         },
       },
     },
-    async (request) => {
+    async (request: any) => {
       await resetPassword(request.body.token, request.body.password, ctxOf(request));
       return { data: { ok: true } };
     },

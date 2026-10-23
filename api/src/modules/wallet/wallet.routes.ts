@@ -8,6 +8,7 @@ import type { FastifyPluginAsync } from 'fastify';
 
 import { db } from '../../db/client.js';
 import { requireActiveUser, requireUserId } from '../../shared/auth/guards.js';
+import { errorResponseSchema } from '../../shared/errors.js';
 import { decodeCursor } from '../../shared/pagination.js';
 import { findNextExpiry } from './wallet.repository.js';
 import { claimWelcomeBonus, getStatement, getWalletSummary } from './wallet.service.js';
@@ -31,7 +32,7 @@ export const walletRoutes: FastifyPluginAsync = async (app) => {
           'Saldo **derivado** do ledger (ADR-001): `available` (gastável agora), `held` (reservado em sessões abertas) e `total` (líquido = disponível + reservado). Nunca há coluna de saldo em `users`.',
         response: {
           200: walletBalanceResponseSchema,
-          401: { $ref: 'ErrorResponse#' },
+          401: errorResponseSchema,
         },
       },
     },
@@ -68,8 +69,8 @@ export const walletRoutes: FastifyPluginAsync = async (app) => {
         querystring: walletEntriesQuerySchema,
         response: {
           200: walletEntriesResponseSchema,
-          400: { $ref: 'ErrorResponse#' },
-          401: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          401: errorResponseSchema,
         },
       },
     },
@@ -126,8 +127,8 @@ export const walletRoutes: FastifyPluginAsync = async (app) => {
           'Concedido automaticamente ao concluir o onboarding (BR-101). Idempotente: retorna `granted: false` quando o bônus já foi creditado.',
         response: {
           200: welcomeCreditResponseSchema,
-          401: { $ref: 'ErrorResponse#' },
-          422: { $ref: 'ErrorResponse#' },
+          401: errorResponseSchema,
+          422: errorResponseSchema,
         },
       },
     },

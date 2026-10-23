@@ -68,7 +68,9 @@ export const users = pgTable(
     index('idx_users_city').on(t.city),
     index('idx_users_rating').on(sql`${t.ratingAvg} DESC NULLS LAST`),
     // BR-004 / F2.2 — usuários "descobertos" precisam de onboarding concluído e status ativo
-    index('idx_users_discoverable').on(t.status, sql`${t.onboardingCompletedAt} IS NOT NULL`),
+    index('idx_users_discoverable')
+      .on(t.status)
+      .where(sql`${t.onboardingCompletedAt} IS NOT NULL`),
     index('idx_users_deleted_at').on(t.deletedAt),
   ],
 );

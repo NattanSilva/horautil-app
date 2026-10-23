@@ -19,7 +19,7 @@ import { MATCHING_WEIGHTS } from '../../config/constants.js';
 import { DAY_MS } from '../../shared/datetime.js';
 import { writeAudit, type RequestContext } from '../../shared/audit.js';
 import { badRequest } from '../../shared/errors.js';
-import { reports } from '../../db/schema/index.js';
+import { reports, type ReportStatus } from '../../db/schema/index.js';
 import {
   countTeachers,
   findAvailabilityFor,
@@ -296,7 +296,7 @@ export async function reportContent(
   reporterId: string,
   input: { target_user_id?: string; booking_id?: string; reason: string },
   ctx: RequestContext,
-): Promise<{ id: string; status: 'open' }> {
+): Promise<{ id: string; status: ReportStatus }> {
   if (!input.target_user_id && !input.booking_id) {
     throw badRequest('Informe `target_user_id` ou `booking_id` para registrar a denúncia.');
   }

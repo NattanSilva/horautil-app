@@ -15,6 +15,7 @@ import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 
 import { requireActiveUser, requireUserId } from '../../shared/auth/guards.js';
+import { errorResponseSchema } from '../../shared/errors.js';
 import {
   addLearnSkill,
   addTeachSkill,
@@ -49,8 +50,8 @@ const skillsResponseSchema = z.object({ data: z.array(skillSchema) });
 const removedResponseSchema = z.object({ data: z.object({ deleted: z.boolean() }) });
 
 export const profileRoutes: FastifyPluginAsync = async (app) => {
-  const ctxOf = (request: { ip: string; id: string }) => ({
-    actorId: requireUserId(request),
+  const ctxOf = (request: any) => ({
+    actorId: request.user?.sub ?? request.id,
     ip: request.ip,
     correlationId: request.id,
   });
@@ -68,14 +69,14 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
         body: onboardingBodySchema,
         response: {
           200: onboardingResponseSchema,
-          400: { $ref: 'ErrorResponse#' },
-          401: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          401: errorResponseSchema,
         },
       },
     },
-    async (request) => {
+    async (request: any) => {
       const userId = requireUserId(request);
-      const result = await completeOnboarding(userId, request.body, ctxOf(request));
+      const result = await completeOnboarding(userId, request.body as any, ctxOf(request));
       return {
         data: {
           onboarding_completed_at: result.onboardingCompletedAt.toISOString(),
@@ -99,12 +100,12 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
         tags: ['profile'],
         summary: 'Atualizar meu perfil',
         body: updateMeBodySchema,
-        response: { 200: meResponseSchema, 400: { $ref: 'ErrorResponse#' }, 401: { $ref: 'ErrorResponse#' } },
+        response: { 200: meResponseSchema, 400: errorResponseSchema, 401: errorResponseSchema },
       },
     },
-    async (request) => {
+    async (request: any) => {
       const userId = requireUserId(request);
-      const user = await updateMe(userId, request.body, ctxOf(request));
+      const user = await updateMe(userId, request.body as any, ctxOf(request));
       return {
         data: {
           id: user.id,
@@ -132,7 +133,7 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
       schema: {
         tags: ['profile'],
         summary: 'Listar o que eu ensino',
-        response: { 200: skillsResponseSchema, 401: { $ref: 'ErrorResponse#' } },
+        response: { 200: skillsResponseSchema, 401: errorResponseSchema },
       },
     },
     async (request) => {
@@ -152,13 +153,13 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
         body: teachSkillBodySchema,
         response: {
           201: z.object({ data: skillSchema }),
-          400: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          409: errorResponseSchema,
         },
       },
     },
-    async (request, reply) => {
-      const row = await addTeachSkill(requireUserId(request), request.body, ctxOf(request));
+    async (request: any, reply: any) => {
+      const row = await addTeachSkill(requireUserId(request), request.body as any, ctxOf(request));
       reply.status(201);
       return { data: mapSkill({ ...row, mode: 'teach' }) };
     },
@@ -174,13 +175,14 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
         params: skillParamsSchema,
         response: {
           200: removedResponseSchema,
-          401: { $ref: 'ErrorResponse#' },
-          404: { $ref: 'ErrorResponse#' },
+          401: errorResponseSchema,
+          404: errorResponseSchema,
         },
       },
     },
     async (request) => {
-      await removeSkill(requireUserId(request), request.params.id, 'teach', ctxOf(request));
+      const { id } = skillParamsSchema.parse(request.params);
+      await removeSkill(requireUserId(request), id, 'teach', ctxOf(request));
       return { data: { deleted: true } };
     },
   );
@@ -193,7 +195,7 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
       schema: {
         tags: ['profile'],
         summary: 'Listar o que quero aprender',
-        response: { 200: skillsResponseSchema, 401: { $ref: 'ErrorResponse#' } },
+        response: { 200: skillsResponseSchema, 401: errorResponseSchema },
       },
     },
     async (request) => {
@@ -212,13 +214,14 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
         body: learnSkillBodySchema,
         response: {
           201: z.object({ data: skillSchema }),
-          400: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          409: errorResponseSchema,
         },
       },
     },
     async (request, reply) => {
-      const row = await addLearnSkill(requireUserId(request), request.body, ctxOf(request));
+      const body = learnSkillBodySchema.parse(request.body);
+      const row = await addLearnSkill(requireUserId(request), body, ctxOf(request));
       reply.status(201);
       return { data: mapSkill({ ...row, mode: 'learn' }) };
     },
@@ -234,13 +237,14 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
         params: skillParamsSchema,
         response: {
           200: removedResponseSchema,
-          401: { $ref: 'ErrorResponse#' },
-          404: { $ref: 'ErrorResponse#' },
+          401: errorResponseSchema,
+          404: errorResponseSchema,
         },
       },
     },
     async (request) => {
-      await removeSkill(requireUserId(request), request.params.id, 'learn', ctxOf(request));
+      const { id } = skillParamsSchema.parse(request.params);
+      await removeSkill(requireUserId(request), id, 'learn', ctxOf(request));
       return { data: { deleted: true } };
     },
   );
@@ -253,7 +257,7 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
       schema: {
         tags: ['profile'],
         summary: 'Ler minha grade de disponibilidade',
-        response: { 200: availabilityResponseSchema, 401: { $ref: 'ErrorResponse#' } },
+        response: { 200: availabilityResponseSchema, 401: errorResponseSchema },
       },
     },
     async (request) => {
@@ -284,14 +288,15 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
         body: replaceAvailabilityBodySchema,
         response: {
           200: availabilityResponseSchema,
-          400: { $ref: 'ErrorResponse#' },
-          401: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          401: errorResponseSchema,
         },
       },
     },
     async (request) => {
       const userId = requireUserId(request);
-      await setAvailability(userId, request.body.slots, request.body.timezone, ctxOf(request));
+      const body = replaceAvailabilityBodySchema.parse(request.body);
+      await setAvailability(userId, body.slots, body.timezone, ctxOf(request));
       const result = await getAvailability(userId);
       return {
         data: {
@@ -317,7 +322,7 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
         tags: ['profile'],
         summary: 'Exportar meus dados (LGPD)',
         description: 'Inclui perfil, habilidades, disponibilidade, ledger, agendamentos e avaliações.',
-        response: { 200: z.object({ data: z.record(z.string(), z.unknown()) }), 401: { $ref: 'ErrorResponse#' } },
+        response: { 200: z.object({ data: z.record(z.string(), z.unknown()) }), 401: errorResponseSchema },
       },
     },
     async (request) => ({ data: await exportData(requireUserId(request)) }),
@@ -336,13 +341,14 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
         body: deleteMeBodySchema,
         response: {
           200: z.object({ data: z.object({ deleted: z.boolean(), anonymization_in_days: z.number().int() }) }),
-          400: { $ref: 'ErrorResponse#' },
-          401: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          401: errorResponseSchema,
         },
       },
     },
     async (request) => {
-      await deleteAccount(requireUserId(request), request.body?.reason, ctxOf(request));
+      const body = deleteMeBodySchema.parse(request.body ?? {});
+      await deleteAccount(requireUserId(request), body.reason, ctxOf(request));
       return { data: { deleted: true, anonymization_in_days: 30 } };
     },
   );
@@ -359,14 +365,15 @@ export const profileRoutes: FastifyPluginAsync = async (app) => {
         params: idParamsSchema,
         response: {
           200: publicProfileResponseSchema,
-          401: { $ref: 'ErrorResponse#' },
-          404: { $ref: 'ErrorResponse#' },
+          401: errorResponseSchema,
+          404: errorResponseSchema,
         },
       },
     },
     async (request) => {
-      const viewerId = request.user?.sub ?? request.params.id;
-      const profile = await getPublicProfile(request.params.id, viewerId);
+      const { id } = idParamsSchema.parse(request.params);
+      const viewerId = request.user?.sub ?? id;
+      const profile = await getPublicProfile(id, viewerId);
       return {
         data: {
           id: profile.id,

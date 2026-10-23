@@ -125,8 +125,8 @@ export function registerErrorHandler(app: FastifyInstance): void {
           code: 'VALIDATION_ERROR',
           message: 'Payload inválido.',
           details: error.validation.map((issue) => ({
-            path: issue.params.issue.path?.join('.') ?? issue.params.issue.code ?? '',
-            message: issue.params.issue.message,
+            path: issue.instancePath?.replace(/^\//, '') || issue.keyword || '',
+            message: issue.message,
           })),
         },
         correlation_id: correlationId,

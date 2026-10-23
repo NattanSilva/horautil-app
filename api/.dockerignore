@@ -11,7 +11,5 @@ coverage
 .gitignore
 .vscode
 .idea
-drizzle/*.sql
-!drizzle/migrations/**
 *.tsbuildinfo
 README.md

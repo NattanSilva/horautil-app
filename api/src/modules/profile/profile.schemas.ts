@@ -76,9 +76,9 @@ export const availabilityResponseSchema = z.object({
   data: z.object({
     timezone: z.string(),
     slots: z.array(
-      availabilityWindowSchema.extend({
+      z.object({
         id: z.uuid(),
-        weekday: z.coerce.number().int(),
+        weekday: z.number().int(),
         start_time: z.string(),
         end_time: z.string(),
         active: z.boolean(),

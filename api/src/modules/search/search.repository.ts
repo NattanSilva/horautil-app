@@ -77,7 +77,10 @@ function baseConditions(viewerId: string): SQL[] {
 }
 
 /** Constrói o `WHERE` completo a partir dos filtros — compartilhado por lista e contagem. */
-export function buildTeacherConditions(filters: TeacherFilters, viewerId: string): SQL[] {
+export function buildTeacherConditions(
+  filters: Omit<TeacherFilters, 'limit'>,
+  viewerId: string,
+): SQL[] {
   const conditions = baseConditions(viewerId);
 
   if (filters.city) conditions.push(ilike(users.city, `%${escapeLike(filters.city)}%`));
@@ -155,7 +158,7 @@ export async function findTeachers(
 
 /** Total de candidatos para o mesmo filtro — alimentaria `meta.total`. */
 export async function countTeachers(
-  filters: TeacherFilters,
+  filters: Omit<TeacherFilters, 'limit'>,
   viewerId: string,
   executor: Executor = db,
 ): Promise<number> {

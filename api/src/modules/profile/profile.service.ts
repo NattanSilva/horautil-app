@@ -12,7 +12,8 @@ import { eq, inArray } from 'drizzle-orm';
 
 import { db } from '../../db/client.js';
 import { BR } from '../../config/constants.js';
-import { categories, userSkills, type Tx } from '../../db/schema/index.js';
+import { categories, userSkills } from '../../db/schema/index.js';
+import type { Tx } from '../../db/client.js';
 import { badRequest, conflict, notFound } from '../../shared/errors.js';
 import { writeAudit, type RequestContext } from '../../shared/audit.js';
 import { creditWelcomeBonus } from '../wallet/wallet.service.js';

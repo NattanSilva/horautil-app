@@ -46,7 +46,9 @@ export const refreshTokens = pgTable(
   },
   (t) => [
     uniqueIndex('refresh_tokens_hash_unique').on(t.tokenHash),
-    index('idx_refresh_tokens_user').on(t.userId, sql`${t.revokedAt} IS NULL`),
+    index('idx_refresh_tokens_user')
+      .on(t.userId)
+      .where(sql`${t.revokedAt} IS NULL`),
     index('idx_refresh_tokens_expiry').on(t.expiresAt),
   ],
 );

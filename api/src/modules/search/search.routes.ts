@@ -11,6 +11,7 @@
 import type { FastifyPluginAsync } from 'fastify';
 
 import { requireActiveUser, requireUserId } from '../../shared/auth/guards.js';
+import { errorResponseSchema } from '../../shared/errors.js';
 import { suggestCategories } from '../catalog/catalog.service.js';
 import { getMatches, reportContent, searchTeachers } from './search.service.js';
 import {
@@ -40,8 +41,8 @@ export const searchRoutes: FastifyPluginAsync = async (app) => {
         querystring: searchTeachersQuerySchema,
         response: {
           200: searchTeachersResponseSchema,
-          400: { $ref: 'ErrorResponse#' },
-          401: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          401: errorResponseSchema,
         },
       },
     },
@@ -59,7 +60,6 @@ export const searchRoutes: FastifyPluginAsync = async (app) => {
           weekday: query.weekday,
           periodFrom: query.period_from,
           periodTo: query.period_to,
-          limit: query.limit,
         },
         { limit: query.limit, sort: query.sort },
       );
@@ -83,7 +83,7 @@ export const searchRoutes: FastifyPluginAsync = async (app) => {
         querystring: matchesQuerySchema,
         response: {
           200: matchesResponseSchema,
-          401: { $ref: 'ErrorResponse#' },
+          401: errorResponseSchema,
         },
       },
     },
@@ -105,8 +105,8 @@ export const searchRoutes: FastifyPluginAsync = async (app) => {
         querystring: suggestionsQuerySchema,
         response: {
           200: suggestionsResponseSchema,
-          400: { $ref: 'ErrorResponse#' },
-          401: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          401: errorResponseSchema,
         },
       },
     },
@@ -138,18 +138,19 @@ export const searchRoutes: FastifyPluginAsync = async (app) => {
         body: createReportBodySchema,
         response: {
           201: createReportResponseSchema,
-          400: { $ref: 'ErrorResponse#' },
-          401: { $ref: 'ErrorResponse#' },
+          400: errorResponseSchema,
+          401: errorResponseSchema,
         },
       },
     },
     async (request, reply) => {
+      const body = createReportBodySchema.parse(request.body);
       const result = await reportContent(
         requireUserId(request),
         {
-          target_user_id: request.body.target_user_id,
-          booking_id: request.body.booking_id,
-          reason: request.body.reason,
+          target_user_id: body.target_user_id,
+          booking_id: body.booking_id,
+          reason: body.reason,
         },
         { actorId: requireUserId(request), ip: request.ip, correlationId: request.id },
       );

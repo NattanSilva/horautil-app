@@ -6,6 +6,7 @@
  * NF-S10: checagem de ownership acontece nos serviços, comparando com `request.userId`.
  */
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import '@fastify/jwt';
 
 import { accountSuspended, forbidden, tokenExpired, unauthorized } from '../errors.js';
 import { loadActiveUser, reactivateUser } from '../../modules/profile/profile.repository.js';
@@ -45,7 +46,7 @@ declare module 'fastify' {
  * Deve ser chamado **apenas** depois de `requireAuth`.
  */
 export function requireUserId(request: FastifyRequest): string {
-  const userId = request.user?.sub;
+  const userId = (request as any).user?.sub ?? (request as any).jwtPayload?.sub;
   if (!userId) throw unauthorized();
   return userId;
 }
@@ -53,7 +54,7 @@ export function requireUserId(request: FastifyRequest): string {
 /** Valida o access token (assinatura + expiração) e popula `request.user`. */
 export async function requireAuth(request: FastifyRequest, _reply: FastifyReply): Promise<void> {
   try {
-    await request.jwtVerify();
+    await (request as any).jwtVerify();
   } catch (err) {
     const code = (err as { code?: string }).code;
     if (code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED' || code === 'FAST_JWT_EXPIRED') {

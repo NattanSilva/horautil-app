@@ -57,19 +57,6 @@ export async function revokeAllForUser(userId: string, reason: string, executor:
   return rows.length;
 }
 
-/**
- * F1.2 / BR-002 — após troca de senha todas as sessões são revogadas.
- * Usado tanto por `reset-password` quanto por `logout-all`.
- */
-export async function revokeAllForUser(userId: string, reason: string, executor: Executor = db): Promise<number> {
-  const rows = await executor
-    .update(refreshTokens)
-    .set({ revokedAt: new Date(), revokedReason: reason })
-    .where(and(eq(refreshTokens.userId, userId), isNull(refreshTokens.revokedAt)))
-    .returning({ id: refreshTokens.id });
-  return rows.length;
-}
-
 export async function listActiveSessions(userId: string) {
   return db
     .select({

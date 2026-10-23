@@ -93,7 +93,6 @@ export async function listUserSkills(userId: string, mode: 'teach' | 'learn') {
       level: userSkills.level,
       priority: userSkills.priority,
       description: userSkills.description,
-      createdAt: userSkills.createdAt,
     })
     .from(userSkills)
     .innerJoin(categories, eq(categories.id, userSkills.categoryId))

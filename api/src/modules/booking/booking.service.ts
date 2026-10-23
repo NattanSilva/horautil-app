@@ -652,15 +652,15 @@ export async function signalCompletion(
     const closesAt = addMinutes(booking.scheduledAt, booking.durationMinutes + BOOKING.CHECK_IN_TOLERANCE_MINUTES);
     if (now < opensAt) {
       throw invalidTransition(
-        `A sessão só pode ser marcada como concluída a partir de ${toLocal(opensAt)}.`,
+        `A sessão só pode ser marcada como concluída a partir de ${toIso(opensAt)}.`,
       );
     }
 
     const updated = await updateBookingState(
       bookingId,
       { status: 'awaiting_confirmation', studentCompletedAt: now },
-      'confirmed',
-      tx,
+      ['confirmed'],
+      tx as any,
     );
     if (!updated) throw invalidTransition('A sessão mudou de estado.');
 
@@ -1184,4 +1184,4 @@ function mapOverlapError(err: unknown): never {
   throw err;
 }
 
-export { WALLET };
+export { WALLET } from '../../config/constants.js';

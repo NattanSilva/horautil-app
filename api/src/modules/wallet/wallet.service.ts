@@ -28,7 +28,7 @@
 import { and, eq } from 'drizzle-orm';
 import { db, type Executor } from '../../db/client.js';
 import { WALLET } from '../../config/constants.js';
-import { users, type EntryType } from '../../db/schema/index.js';
+import { users, type EntryStatus, type EntryType } from '../../db/schema/index.js';
 import { addDays } from '../../shared/datetime.js';
 import { AppError, insufficientCredits } from '../../shared/errors.js';
 import { writeAudit, type RequestContext } from '../../shared/audit.js';
@@ -51,7 +51,7 @@ export interface LedgerChange {
   userId: string;
   type: EntryType;
   minutes: number;
-  status: 'held' | 'posted' | 'released';
+  status: EntryStatus;
   balanceAfter: number;
 }
 
