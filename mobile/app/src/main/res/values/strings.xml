@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HoraUtil</string>
+    <string name="brand">HoraUtil</string>
+
+    <string name="login_title">Bem-vindo de volta</string>
+    <string name="login_subtitle">Entre para trocar horas de habilidade.</string>
+    <string name="email_label">E-mail</string>
+    <string name="email_placeholder">voce@email.com</string>
+    <string name="password_label">Senha</string>
+    <string name="password_placeholder">••••••••</string>
+    <string name="forgot_password">Esqueci minha senha</string>
+    <string name="login_cta">Entrar</string>
+    <string name="auth_divider">ou continue com</string>
+    <string name="google">Google</string>
+    <string name="apple">Apple</string>
+    <string name="no_account">Não tem uma conta?</string>
+    <string name="sign_up">Cadastre-se</string>
+
+    <string name="register_title">Criar conta</string>
+    <string name="register_subtitle">Preencha seus dados para começar.</string>
+    <string name="full_name_label">Nome completo</string>
+    <string name="full_name_placeholder">Maria Silva</string>
+    <string name="phone_label">Telefone</string>
+    <string name="phone_placeholder">(11) 99999-0000</string>
+    <string name="register_password_placeholder">Mínimo 8 caracteres</string>
+    <string name="confirm_password_label">Confirmar senha</string>
+    <string name="confirm_password_placeholder">Repita sua senha</string>
+    <string name="terms">Concordo com os Termos de Uso</string>
+    <string name="register_cta">Criar conta</string>
+    <string name="have_account">Já tem uma conta?</string>
+    <string name="sign_in">Entrar</string>
+
+    <string name="back">Voltar</string>
+    <string name="show_password">Mostrar senha</string>
+    <string name="hide_password">Ocultar senha</string>
+
+    <string name="error_name_required">Informe seu nome completo.</string>
+    <string name="error_email_required">Informe seu e-mail.</string>
+    <string name="error_email_invalid">Informe um e-mail válido.</string>
+    <string name="error_phone_invalid">Informe um telefone válido.</string>
+    <string name="error_password_required">Informe sua senha.</string>
+    <string name="error_password_short">A senha deve ter ao menos 8 caracteres.</string>
+    <string name="error_password_mismatch">As senhas não conferem.</string>
+    <string name="error_terms_required">Aceite os Termos de Uso para continuar.</string>
+
+    <string name="login_success">Login realizado com sucesso.</string>
+    <string name="login_failed">Não foi possível entrar. Tente novamente.</string>
+    <string name="register_success">Conta criada com sucesso. Faça login.</string>
+    <string name="register_failed">Não foi possível criar sua conta. Tente novamente.</string>
+    <string name="forgot_password_unavailable">Recuperação de senha estará disponível em breve.</string>
+    <string name="social_login_unavailable">Login com %1$s estará disponível em breve.</string>
+</resources>
