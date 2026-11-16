@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.horautil.R
+import br.com.horautil.domain.model.HomeMatch
 import br.com.horautil.ui.components.HomeBottomBar
 import br.com.horautil.ui.components.HomeCategoryTile
 import br.com.horautil.ui.components.HomeDestination
@@ -43,6 +44,9 @@ import br.com.horautil.viewmodel.HomeViewModel
 
 @Composable
 fun HomeRoute(
+    onMatchClick: (String) -> Unit,
+    onDestinationSelected: (HomeDestination) -> Unit,
+    onFabClick: () -> Unit,
     viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -63,13 +67,9 @@ fun HomeRoute(
         onAvatarClick = viewModel::onComingSoon,
         onNotificationsClick = viewModel::onComingSoon,
         onCategoryClick = viewModel::onComingSoon,
-        onMatchClick = viewModel::onComingSoon,
-        onDestinationSelected = { destination ->
-            if (destination != HomeDestination.EXPLORE) {
-                viewModel.onComingSoon()
-            }
-        },
-        onFabClick = viewModel::onComingSoon,
+        onMatchClick = { match -> onMatchClick(match.id) },
+        onDestinationSelected = onDestinationSelected,
+        onFabClick = onFabClick,
     )
 }
 
@@ -81,7 +81,7 @@ fun HomeScreen(
     onAvatarClick: () -> Unit,
     onNotificationsClick: () -> Unit,
     onCategoryClick: () -> Unit,
-    onMatchClick: () -> Unit,
+    onMatchClick: (HomeMatch) -> Unit,
     onDestinationSelected: (HomeDestination) -> Unit,
     onFabClick: () -> Unit,
 ) {
@@ -170,7 +170,7 @@ fun HomeScreen(
                                     match.teaches,
                                     match.wants,
                                 ),
-                                onClick = onMatchClick,
+                                onClick = { onMatchClick(match) },
                             )
                         }
                     }

@@ -78,4 +78,62 @@
     <string name="onboarding_availability_label">Disponibilidade</string>
     <string name="onboarding_cta">Concluir onboarding</string>
     <string name="onboarding_error">Não foi possível concluir. Tente novamente.</string>
+
+    <string name="teacher_bio_title">Sobre</string>
+    <string name="teacher_teaches_label">Ensina</string>
+    <string name="teacher_wants_label">Quer aprender</string>
+    <string name="teacher_rating_meta">⭐ %1$s (%2$d aulas) • %3$s</string>
+    <string name="teacher_date_title">Escolha data e horário</string>
+    <string name="teacher_duration_format">%1$d min</string>
+    <string name="teacher_cta">Agendar Aula</string>
+    <string name="teacher_booking_failed">Não foi possível solicitar a aula. Tente novamente.</string>
+    <string name="teacher_previous_month">Mês anterior</string>
+    <string name="teacher_next_month">Próximo mês</string>
+
+    <string name="schedule_title">Meus Agendamentos</string>
+    <string name="schedule_tab_pending">Pendentes</string>
+    <string name="schedule_tab_accepted">Aceitos</string>
+    <string name="schedule_tab_completed">Concluídos</string>
+    <string name="schedule_status_pending">Pendente</string>
+    <string name="schedule_status_accepted">Aceito</string>
+    <string name="schedule_status_completed">Concluído</string>
+    <string name="schedule_status_declined">Recusado</string>
+    <string name="schedule_status_cancelled">Cancelado</string>
+    <string name="schedule_card_title">%1$s com %2$s</string>
+    <string name="schedule_card_meta">%1$s • %2$s • %3$d min</string>
+    <string name="schedule_empty_title">Nenhum agendamento</string>
+    <string name="schedule_empty_pending">Solicitações pendentes aparecem aqui.</string>
+    <string name="schedule_empty_accepted">Quando você agendar uma aula, ela aparece aqui.</string>
+    <string name="schedule_empty_completed">Aulas concluídas aparecem aqui para avaliação.</string>
+    <string name="schedule_action_accept">Aceitar</string>
+    <string name="schedule_action_decline">Recusar</string>
+    <string name="schedule_action_cancel">Cancelar</string>
+    <string name="schedule_action_review">Avaliar</string>
+    <string name="schedule_action_reviewed">Avaliada</string>
+    <string name="schedule_action_failed">Não foi possível atualizar o agendamento.</string>
+
+    <string name="wallet_balance_label">Saldo disponível</string>
+    <string name="wallet_balance_value">%1$s horas</string>
+    <string name="wallet_weekly_delta">+%1$s h esta semana</string>
+    <string name="wallet_stat_given">Dadas</string>
+    <string name="wallet_stat_received">Recebidas</string>
+    <string name="wallet_stat_pending">Pendentes</string>
+    <string name="wallet_hours_format">%1$s h</string>
+    <string name="wallet_statement_title">Extrato</string>
+    <string name="wallet_entry_title">%1$s • %2$s</string>
+
+    <string name="review_title">Avaliar aula</string>
+    <string name="review_subtitle">Como foi sua aula de %1$s?</string>
+    <string name="review_meta">%1$s • %2$d min</string>
+    <string name="review_feedback_label">Seu feedback</string>
+    <string name="review_feedback_placeholder">Conte como foi a experiência…</string>
+    <string name="review_cta">Enviar avaliação</string>
+    <string name="review_rating_1">Ruim</string>
+    <string name="review_rating_2">Regular</string>
+    <string name="review_rating_3">Boa</string>
+    <string name="review_rating_4">Muito boa!</string>
+    <string name="review_rating_5">Excelente!</string>
+    <string name="review_star_description">Nota %1$d</string>
+    <string name="review_submit_failed">Não foi possível enviar a avaliação. Tente novamente.</string>
+    <string name="review_load_failed">Não foi possível carregar a aula.</string>
 </resources>

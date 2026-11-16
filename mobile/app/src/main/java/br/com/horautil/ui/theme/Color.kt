@@ -42,6 +42,10 @@ val IconCyanBg = Color(0xFFCFFAFE)
 val IconPinkBg = Color(0xFFFCE7F3)
 val IconBlueBg = Color(0xFFDBEAFE)
 
+val CalendarDisabled = Color(0xFFC7CCD9)
+val StarInactive = Color(0xFFECEAF5)
+val RatingText = Color(0xFFF59E0B)
+
 val HeaderGradient = Brush.linearGradient(listOf(HeaderStart, HeaderEnd))
 val CtaGradient = Brush.verticalGradient(listOf(FabStart, FabEnd))
 val FabGradient = Brush.linearGradient(listOf(FabStart, FabEnd))

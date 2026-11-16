@@ -90,3 +90,33 @@ val HoraUtilOnboardingTitle = TextStyle(
     fontWeight = FontWeight.Bold,
     fontSize = 24.sp,
 )
+
+val HoraUtilHeaderTitle = TextStyle(
+    fontFamily = Inter,
+    fontWeight = FontWeight.Bold,
+    fontSize = 20.sp,
+)
+
+val HoraUtilBalance = TextStyle(
+    fontFamily = Inter,
+    fontWeight = FontWeight.Bold,
+    fontSize = 34.sp,
+)
+
+val HoraUtilStatValue = TextStyle(
+    fontFamily = Inter,
+    fontWeight = FontWeight.Bold,
+    fontSize = 17.sp,
+)
+
+val HoraUtilProfileName = TextStyle(
+    fontFamily = Inter,
+    fontWeight = FontWeight.Bold,
+    fontSize = 17.sp,
+)
+
+val HoraUtilMeta = TextStyle(
+    fontFamily = Inter,
+    fontWeight = FontWeight.Normal,
+    fontSize = 11.sp,
+)
