@@ -43,6 +43,7 @@ fun HomeHeader(
     onAvatarClick: () -> Unit,
     onNotificationsClick: () -> Unit,
     modifier: Modifier = Modifier,
+    hasUnreadNotifications: Boolean = false,
 ) {
     Row(
         modifier = modifier
@@ -146,6 +147,16 @@ fun HomeHeader(
                     contentDescription = null,
                     tint = OnHeader,
                     modifier = Modifier.size(HoraUtilDimens.HomeBellIconSize),
+                )
+            }
+            if (hasUnreadNotifications) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = HoraUtilDimens.SpaceHalf, end = HoraUtilDimens.SpaceHalf)
+                        .size(HoraUtilDimens.Space1)
+                        .clip(CircleShape)
+                        .background(br.com.horautil.ui.theme.IconRed),
                 )
             }
         }

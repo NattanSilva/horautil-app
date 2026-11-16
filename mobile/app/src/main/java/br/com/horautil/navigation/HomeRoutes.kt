@@ -5,6 +5,7 @@ object HomeRoutes {
     const val Agenda = "home/agenda"
     const val Wallet = "home/wallet"
     const val Profile = "home/profile"
+    const val Notifications = "home/notifications"
 
     const val AgendaFilterArg = "filter"
     const val AgendaPattern = "$Agenda?$AgendaFilterArg={$AgendaFilterArg}"

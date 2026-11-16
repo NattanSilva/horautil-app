@@ -17,7 +17,7 @@ class InMemoryTeacherRepository : TeacherRepository {
     }
 
     private fun availability() = TeacherAvailability(
-        monthLabel = "Outubro 2026",
+        monthLabel = "Novembro 2026",
         weekdays = listOf("Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"),
         days = listOf(
             AvailabilityDay(dayOfMonth = 27, enabled = false),
@@ -86,7 +86,7 @@ class InMemoryTeacherRepository : TeacherRepository {
                 classesCount = 47,
                 headline = "Programação",
                 bio = "Desenvolvedor backend e mentor de carreira. Ensina programação com projetos reais e revisão de código.",
-                teaches = listOf("Programação", "Tech"),
+                teaches = listOf("Programação", "Kotlin"),
                 wants = listOf("Fotografia"),
                 palette = HomePalette.CYAN,
                 icon = BookingIcon.TECH,
@@ -129,6 +129,45 @@ class InMemoryTeacherRepository : TeacherRepository {
                 wants = listOf("Violão"),
                 palette = HomePalette.AMBER,
                 icon = BookingIcon.LANGUAGES,
+            ),
+            "marcos-a" to TeacherProfile(
+                id = "marcos-a",
+                name = "Marcos A.",
+                initials = "MA",
+                rating = "4,8",
+                classesCount = 38,
+                headline = "Fotografia",
+                bio = "Fotógrafo documental e mobile. Ensina composição, luz natural e edição prática no celular.",
+                teaches = listOf("Fotografia", "Edição"),
+                wants = listOf("Kotlin"),
+                palette = HomePalette.BLUE,
+                icon = BookingIcon.ART,
+            ),
+            "beatriz-s" to TeacherProfile(
+                id = "beatriz-s",
+                name = "Beatriz S.",
+                initials = "BS",
+                rating = "4,9",
+                classesCount = 29,
+                headline = "Espanhol",
+                bio = "Tradutora e professora de espanhol. Foco em conversação para viagens e situações do cotidiano.",
+                teaches = listOf("Espanhol", "Redação"),
+                wants = listOf("Yoga"),
+                palette = HomePalette.PINK,
+                icon = BookingIcon.LANGUAGES,
+            ),
+            "rafael-t" to TeacherProfile(
+                id = "rafael-t",
+                name = "Rafael T.",
+                initials = "RT",
+                rating = "4,6",
+                classesCount = 19,
+                headline = "Natação",
+                bio = "Instrutor de natação para iniciantes. Aulas progressivas com foco em técnica e condicionamento.",
+                teaches = listOf("Natação", "Condicionamento"),
+                wants = listOf("Inglês"),
+                palette = HomePalette.CYAN,
+                icon = BookingIcon.SPORTS,
             ),
         )
     }

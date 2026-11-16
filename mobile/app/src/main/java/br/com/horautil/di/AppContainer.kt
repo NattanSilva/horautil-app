@@ -3,6 +3,7 @@ package br.com.horautil.di
 import br.com.horautil.data.repository.InMemoryAuthRepository
 import br.com.horautil.data.repository.InMemoryBookingRepository
 import br.com.horautil.data.repository.InMemoryHomeRepository
+import br.com.horautil.data.repository.InMemoryNotificationRepository
 import br.com.horautil.data.repository.InMemoryOnboardingRepository
 import br.com.horautil.data.repository.InMemoryReviewRepository
 import br.com.horautil.data.repository.InMemoryTeacherRepository
@@ -11,6 +12,7 @@ import br.com.horautil.data.repository.InMemoryWalletRepository
 import br.com.horautil.domain.repository.AuthRepository
 import br.com.horautil.domain.repository.BookingRepository
 import br.com.horautil.domain.repository.HomeRepository
+import br.com.horautil.domain.repository.NotificationRepository
 import br.com.horautil.domain.repository.OnboardingRepository
 import br.com.horautil.domain.repository.ReviewRepository
 import br.com.horautil.domain.repository.TeacherRepository
@@ -46,6 +48,7 @@ object AppContainer {
     private val teacherRepository: TeacherRepository = InMemoryTeacherRepository()
     private val bookingRepository: BookingRepository = InMemoryBookingRepository()
     private val reviewRepository: ReviewRepository = InMemoryReviewRepository()
+    val notificationRepository: NotificationRepository = InMemoryNotificationRepository()
 
     val loginUseCase = LoginUseCase(authRepository)
     val registerUseCase = RegisterUseCase(authRepository)

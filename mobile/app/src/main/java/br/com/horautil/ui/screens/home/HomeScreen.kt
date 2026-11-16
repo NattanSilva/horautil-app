@@ -4,11 +4,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -25,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -49,6 +55,8 @@ fun HomeRoute(
     onMatchClick: (String) -> Unit,
     onDestinationSelected: (HomeDestination) -> Unit,
     onFabClick: () -> Unit,
+    onNotificationsClick: () -> Unit,
+    hasUnreadNotifications: Boolean,
     viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -69,9 +77,10 @@ fun HomeRoute(
     HomeScreen(
         state = state,
         snackbarHostState = snackbarHostState,
+        hasUnreadNotifications = hasUnreadNotifications,
         onSearchQueryChange = viewModel::onSearchQueryChange,
         onAvatarClick = { onDestinationSelected(HomeDestination.PROFILE) },
-        onNotificationsClick = viewModel::onComingSoon,
+        onNotificationsClick = onNotificationsClick,
         onCategoryClick = viewModel::onComingSoon,
         onMatchClick = { match -> onMatchClick(match.id) },
         onDestinationSelected = onDestinationSelected,
@@ -83,6 +92,7 @@ fun HomeRoute(
 fun HomeScreen(
     state: HomeUiState,
     snackbarHostState: SnackbarHostState,
+    hasUnreadNotifications: Boolean,
     onSearchQueryChange: (String) -> Unit,
     onAvatarClick: () -> Unit,
     onNotificationsClick: () -> Unit,
@@ -104,6 +114,7 @@ fun HomeScreen(
                 balance = stringResource(R.string.home_balance, state.availableBalance),
                 onAvatarClick = onAvatarClick,
                 onNotificationsClick = onNotificationsClick,
+                hasUnreadNotifications = hasUnreadNotifications,
             )
 
             Surface(
@@ -121,8 +132,6 @@ fun HomeScreen(
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                         .padding(
-                            start = HoraUtilDimens.HomeBodyHorizontalPadding,
-                            end = HoraUtilDimens.HomeBodyHorizontalPadding,
                             top = HoraUtilDimens.HomeBodyTopPadding,
                             bottom = HoraUtilDimens.HomeBodyBottomPadding,
                         ),
@@ -132,22 +141,25 @@ fun HomeScreen(
                         value = state.searchQuery,
                         onValueChange = onSearchQueryChange,
                         placeholder = stringResource(R.string.home_search_placeholder),
+                        modifier = Modifier.padding(horizontal = HoraUtilDimens.HomeBodyHorizontalPadding),
                     )
 
                     Text(
                         text = stringResource(R.string.home_categories_title),
                         style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(horizontal = HoraUtilDimens.HomeBodyHorizontalPadding),
                     )
 
-                    Row(
+                    LazyRow(
                         modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(horizontal = HoraUtilDimens.HomeBodyHorizontalPadding),
                         horizontalArrangement = Arrangement.spacedBy(HoraUtilDimens.HomeCategoryGridGap),
                     ) {
-                        state.visibleCategories.forEach { category ->
+                        items(state.visibleCategories, key = { it.id }) { category ->
                             HomeCategoryTile(
                                 category = category,
                                 onClick = onCategoryClick,
-                                modifier = Modifier.weight(1f),
+                                modifier = Modifier.width(76.dp),
                             )
                         }
                     }
@@ -155,29 +167,35 @@ fun HomeScreen(
                     Text(
                         text = stringResource(R.string.home_matches_title),
                         style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(horizontal = HoraUtilDimens.HomeBodyHorizontalPadding),
                     )
 
-                    if (state.visibleMatches.isEmpty()) {
-                        Text(
-                            text = stringResource(R.string.home_empty_state),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = TextSecondary,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = HoraUtilDimens.Space3),
-                        )
-                    } else {
-                        state.visibleMatches.forEach { match ->
-                            MatchCard(
-                                match = match,
-                                subtitle = stringResource(
-                                    R.string.home_match_subtitle,
-                                    match.teaches,
-                                    match.wants,
-                                ),
-                                onClick = { onMatchClick(match) },
+                    Column(
+                        modifier = Modifier.padding(horizontal = HoraUtilDimens.HomeBodyHorizontalPadding),
+                        verticalArrangement = Arrangement.spacedBy(HoraUtilDimens.HomeBodyGap),
+                    ) {
+                        if (state.visibleMatches.isEmpty()) {
+                            Text(
+                                text = stringResource(R.string.home_empty_state),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = TextSecondary,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = HoraUtilDimens.Space3),
                             )
+                        } else {
+                            state.visibleMatches.forEach { match ->
+                                MatchCard(
+                                    match = match,
+                                    subtitle = stringResource(
+                                        R.string.home_match_subtitle,
+                                        match.teaches,
+                                        match.wants,
+                                    ),
+                                    onClick = { onMatchClick(match) },
+                                )
+                            }
                         }
                     }
                 }

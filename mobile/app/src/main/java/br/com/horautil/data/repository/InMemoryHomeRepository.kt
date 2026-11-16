@@ -56,6 +56,42 @@ class InMemoryHomeRepository(
             icon = HomeCategoryIcon.SPORTS,
             palette = HomePalette.AMBER,
         ),
+        HomeCategory(
+            id = "arts",
+            label = "Artes",
+            icon = HomeCategoryIcon.MUSIC,
+            palette = HomePalette.PINK,
+        ),
+        HomeCategory(
+            id = "wellness",
+            label = "Bem-estar",
+            icon = HomeCategoryIcon.SPORTS,
+            palette = HomePalette.CYAN,
+        ),
+        HomeCategory(
+            id = "cooking",
+            label = "Culinária",
+            icon = HomeCategoryIcon.SPORTS,
+            palette = HomePalette.RED,
+        ),
+        HomeCategory(
+            id = "photo",
+            label = "Fotografia",
+            icon = HomeCategoryIcon.TECH,
+            palette = HomePalette.BLUE,
+        ),
+        HomeCategory(
+            id = "design",
+            label = "Design",
+            icon = HomeCategoryIcon.TECH,
+            palette = HomePalette.PINK,
+        ),
+        HomeCategory(
+            id = "business",
+            label = "Negócios",
+            icon = HomeCategoryIcon.LANGUAGES,
+            palette = HomePalette.AMBER,
+        ),
     )
 
     private fun matches() = listOf(
@@ -108,6 +144,36 @@ class InMemoryHomeRepository(
             matchPercent = 76,
             rating = "4,9",
             palette = HomePalette.AMBER,
+        ),
+        HomeMatch(
+            id = "marcos-a",
+            name = "Marcos A.",
+            initials = "MA",
+            teaches = "fotografia",
+            wants = "kotlin",
+            matchPercent = 91,
+            rating = "4,8",
+            palette = HomePalette.BLUE,
+        ),
+        HomeMatch(
+            id = "beatriz-s",
+            name = "Beatriz S.",
+            initials = "BS",
+            teaches = "espanhol",
+            wants = "yoga",
+            matchPercent = 84,
+            rating = "4,9",
+            palette = HomePalette.PINK,
+        ),
+        HomeMatch(
+            id = "rafael-t",
+            name = "Rafael T.",
+            initials = "RT",
+            teaches = "natação",
+            wants = "inglês",
+            matchPercent = 79,
+            rating = "4,6",
+            palette = HomePalette.CYAN,
         ),
     )
 

@@ -14,12 +14,47 @@ class InMemoryWalletRepository : WalletRepository {
 
     private val summary = MutableStateFlow(
         WalletSummary(
-            availableHours = 12.5,
-            weeklyDeltaHours = 2.0,
-            givenHours = 8.0,
-            receivedHours = 4.5,
-            pendingHours = 1.0,
+            availableHours = 13.0,
+            weeklyDeltaHours = 2.5,
+            givenHours = 11.0,
+            receivedHours = 6.0,
+            pendingHours = 1.5,
             entries = listOf(
+                WalletEntry(
+                    id = "entry-review-bonus-hoje",
+                    title = "Bônus de avaliação",
+                    dateLabel = "16/11/2026",
+                    amountHours = 0.5,
+                    type = WalletEntryType.BONUS,
+                ),
+                WalletEntry(
+                    id = "entry-kotlin-received",
+                    title = "Aula de Kotlin recebida",
+                    dateLabel = "15/11/2026",
+                    amountHours = -1.5,
+                    type = WalletEntryType.RECEIVED,
+                ),
+                WalletEntry(
+                    id = "entry-yoga-given",
+                    title = "Aula de yoga dada",
+                    dateLabel = "12/11/2026",
+                    amountHours = 1.0,
+                    type = WalletEntryType.GIVEN,
+                ),
+                WalletEntry(
+                    id = "entry-fotografia-given",
+                    title = "Aula de fotografia dada",
+                    dateLabel = "08/11/2026",
+                    amountHours = 1.0,
+                    type = WalletEntryType.GIVEN,
+                ),
+                WalletEntry(
+                    id = "entry-espanhol-hold",
+                    title = "Reserva - Aula de espanhol",
+                    dateLabel = "05/11/2026",
+                    amountHours = -1.0,
+                    type = WalletEntryType.HELD,
+                ),
                 WalletEntry(
                     id = "entry-violao-given",
                     title = "Aula de violão dada",

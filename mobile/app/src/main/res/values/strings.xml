@@ -148,4 +148,12 @@
     <string name="profile_wants_title">Quer aprender</string>
     <string name="profile_balance_label">Saldo disponível</string>
     <string name="profile_wallet_action">Ver carteira</string>
+
+    <string name="notifications_title">Notificações</string>
+    <string name="notifications_mark_all_read">Marcar todas como lidas</string>
+    <string name="notifications_empty_title">Tudo em dia</string>
+    <string name="notifications_empty_subtitle">Quando houver novidades, elas aparecem aqui.</string>
+    <string name="notifications_action_open">Abrir</string>
+    <string name="notifications_action_accept">Aceitar</string>
+    <string name="notifications_action_decline">Recusar</string>
 </resources>

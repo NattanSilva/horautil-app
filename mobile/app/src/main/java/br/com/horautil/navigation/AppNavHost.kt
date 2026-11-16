@@ -12,16 +12,26 @@ import br.com.horautil.ui.screens.agenda.AgendaRoute
 import br.com.horautil.ui.screens.auth.LoginRoute
 import br.com.horautil.ui.screens.auth.RegisterRoute
 import br.com.horautil.ui.screens.home.HomeRoute
+import br.com.horautil.ui.screens.notifications.NotificationsRoute
 import br.com.horautil.ui.screens.onboarding.OnboardingRoute
 import br.com.horautil.ui.screens.profile.ProfileRoute
 import br.com.horautil.ui.screens.review.ReviewRoute
 import br.com.horautil.ui.screens.teacher.TeacherProfileRoute
 import br.com.horautil.ui.screens.wallet.WalletRoute
 import br.com.horautil.viewmodel.AgendaFilter
+import br.com.horautil.viewmodel.NotificationsViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import br.com.horautil.domain.model.BookingStatus
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
+import br.com.horautil.di.AppContainer
 
 @Composable
 fun AppNavHost() {
     val navController = rememberNavController()
+    val notificationsViewModel: NotificationsViewModel = viewModel(factory = NotificationsViewModel.Factory)
+    val notificationsState = notificationsViewModel.uiState.collectAsStateWithLifecycle().value
+    val scope = rememberCoroutineScope()
 
     fun selectTab(route: String) {
         navController.navigate(route) {
@@ -95,6 +105,33 @@ fun AppNavHost() {
                 },
                 onDestinationSelected = onDestinationSelected,
                 onFabClick = { selectTab(HomeRoutes.Home) },
+                onNotificationsClick = { navController.navigate(HomeRoutes.Notifications) },
+                hasUnreadNotifications = notificationsState.hasUnread,
+            )
+        }
+
+        composable(HomeRoutes.Notifications) {
+            NotificationsRoute(
+                onBack = { navController.popBackStack() },
+                onOpenAgenda = { filter -> navController.navigate(HomeRoutes.agenda(filter)) },
+                onOpenWallet = { selectTab(HomeRoutes.Wallet) },
+                onOpenReview = { bookingId -> navController.navigate(HomeRoutes.review(bookingId)) },
+                onAcceptRequest = { bookingId ->
+                    scope.launch {
+                        AppContainer.updateBookingStatusUseCase(bookingId, BookingStatus.ACCEPTED)
+                        navController.navigate(HomeRoutes.agenda("accepted")) {
+                            popUpTo(HomeRoutes.Home)
+                        }
+                    }
+                },
+                onDeclineRequest = { bookingId ->
+                    scope.launch {
+                        AppContainer.updateBookingStatusUseCase(bookingId, BookingStatus.DECLINED)
+                        navController.navigate(HomeRoutes.agenda("pending")) {
+                            popUpTo(HomeRoutes.Home)
+                        }
+                    }
+                },
             )
         }
 
