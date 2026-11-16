@@ -101,6 +101,9 @@ object HoraUtilDimens {
     val HomeMatchBadgeCorner = 12.dp
     val HomeMatchBadgeHorizontalPadding = 10.dp
     val HomeMatchBadgeVerticalPadding = 4.dp
+    val HomeMatchRatingGap = 6.dp
+    val HomeMatchRatingInnerGap = 3.dp
+    val HomeMatchStarSize = 12.dp
 
     val HomeBottomNavHeight = 72.dp
     val HomeBottomNavHorizontalPadding = 8.dp
@@ -236,4 +239,27 @@ object HoraUtilDimens {
     val ReviewTextAreaHeight = 110.dp
     val ReviewTextAreaCorner = 14.dp
     val ReviewTextAreaPadding = 14.dp
+
+    val ProfileHeaderHorizontalPadding = 20.dp
+    val ProfileHeaderTopPadding = 20.dp
+    val ProfileHeaderBottomPadding = 26.dp
+    val ProfileHeaderGap = 12.dp
+    val ProfileAvatarSize = 56.dp
+    val ProfileAvatarCorner = 28.dp
+    val ProfileInfoGap = 2.dp
+    val ProfileBodyTopPadding = 24.dp
+    val ProfileBodyHorizontalPadding = 20.dp
+    val ProfileBodyBottomPadding = 20.dp
+    val ProfileBodyGap = 20.dp
+    val ProfileSectionGap = 8.dp
+    val ProfileChipCorner = 14.dp
+    val ProfileChipHorizontalPadding = 14.dp
+    val ProfileChipVerticalPadding = 8.dp
+    val ProfileChipGap = 8.dp
+    val ProfileBalanceCorner = 18.dp
+    val ProfileBalancePadding = 16.dp
+    val ProfileBalanceGap = 12.dp
+    val ProfileWalletChipCorner = 12.dp
+    val ProfileWalletChipHorizontalPadding = 10.dp
+    val ProfileWalletChipVerticalPadding = 8.dp
 }

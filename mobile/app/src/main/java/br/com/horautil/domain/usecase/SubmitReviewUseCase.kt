@@ -37,7 +37,11 @@ class SubmitReviewUseCase(
         )
         reviewRepository.submit(review).getOrElse { return Result.failure(it) }
         bookingRepository.markReviewed(bookingId).getOrElse { return Result.failure(it) }
-        walletRepository.addReviewBonus(bookingId)
+        walletRepository.settleLesson(
+            bookingId = bookingId,
+            title = "Aula de ${booking.skill} com ${booking.teacherName}",
+            hours = booking.durationMinutes / 60.0,
+        ).getOrElse { return Result.failure(it) }
         return Result.success(Unit)
     }
 }

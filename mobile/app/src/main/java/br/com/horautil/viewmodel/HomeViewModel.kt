@@ -62,6 +62,12 @@ class HomeViewModel(
         _uiState.update { it.copy(searchQuery = value) }
     }
 
+    fun refresh() {
+        if (!_uiState.value.isLoading) {
+            loadHomeFeed()
+        }
+    }
+
     fun onComingSoon() {
         _uiState.update { it.copy(message = HomeUiMessage.ComingSoon) }
     }

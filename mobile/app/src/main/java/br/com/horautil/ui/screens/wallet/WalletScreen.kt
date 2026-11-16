@@ -1,4 +1,4 @@
-﻿package br.com.horautil.ui.screens.wallet
+package br.com.horautil.ui.screens.wallet
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +37,9 @@ import br.com.horautil.domain.model.WalletSummary
 import br.com.horautil.ui.components.HomeBottomBar
 import br.com.horautil.ui.components.HomeDestination
 import br.com.horautil.ui.components.PaletteIconTile
+import br.com.horautil.ui.format.formatHours
+import br.com.horautil.ui.format.formatHoursFixed
+import br.com.horautil.ui.format.signedHours
 import br.com.horautil.ui.theme.Card
 import br.com.horautil.ui.theme.HeaderBrand
 import br.com.horautil.ui.theme.HeaderGradient

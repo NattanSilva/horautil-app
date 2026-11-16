@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +32,9 @@ import br.com.horautil.ui.theme.Card
 import br.com.horautil.ui.theme.ChipActive
 import br.com.horautil.ui.theme.HoraUtilCaption
 import br.com.horautil.ui.theme.HoraUtilDimens
+import br.com.horautil.ui.theme.IconAmberBg
 import br.com.horautil.ui.theme.Primary
+import br.com.horautil.ui.theme.RatingText
 import br.com.horautil.ui.theme.TextPrimary
 import br.com.horautil.ui.theme.TextSecondary
 
@@ -92,20 +97,54 @@ fun MatchCard(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(HoraUtilDimens.HomeMatchBadgeCorner))
-                    .background(ChipActive)
-                    .padding(
-                        horizontal = HoraUtilDimens.HomeMatchBadgeHorizontalPadding,
-                        vertical = HoraUtilDimens.HomeMatchBadgeVerticalPadding,
-                    ),
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(HoraUtilDimens.HomeMatchRatingGap),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = stringResource(R.string.home_match_badge, match.matchPercent),
-                    style = HoraUtilCaption,
-                    color = Primary,
-                )
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(HoraUtilDimens.HomeMatchBadgeCorner))
+                        .background(ChipActive)
+                        .padding(
+                            horizontal = HoraUtilDimens.HomeMatchBadgeHorizontalPadding,
+                            vertical = HoraUtilDimens.HomeMatchBadgeVerticalPadding,
+                        ),
+                ) {
+                    Text(
+                        text = stringResource(R.string.home_match_badge, match.matchPercent),
+                        style = HoraUtilCaption,
+                        color = Primary,
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(HoraUtilDimens.HomeMatchBadgeCorner))
+                        .background(IconAmberBg)
+                        .padding(
+                            horizontal = HoraUtilDimens.HomeMatchBadgeHorizontalPadding,
+                            vertical = HoraUtilDimens.HomeMatchBadgeVerticalPadding,
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(
+                        HoraUtilDimens.HomeMatchRatingInnerGap,
+                    ),
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Star,
+                        contentDescription = stringResource(
+                            R.string.home_match_rating_desc,
+                            match.rating,
+                        ),
+                        tint = RatingText,
+                        modifier = Modifier.size(HoraUtilDimens.HomeMatchStarSize),
+                    )
+                    Text(
+                        text = match.rating,
+                        style = HoraUtilCaption,
+                        color = RatingText,
+                    )
+                }
             }
         }
     }

@@ -39,9 +39,10 @@ data class AgendaUiState(
 class AgendaViewModel(
     private val getBookingsUseCase: GetBookingsUseCase,
     private val updateBookingStatusUseCase: UpdateBookingStatusUseCase,
+    initialFilter: AgendaFilter = AgendaFilter.ACCEPTED,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AgendaUiState())
+    private val _uiState = MutableStateFlow(AgendaUiState(selectedFilter = initialFilter))
     val uiState: StateFlow<AgendaUiState> = _uiState.asStateFlow()
 
     init {
@@ -68,6 +69,18 @@ class AgendaViewModel(
 
     fun cancel(bookingId: String) {
         changeStatus(bookingId, BookingStatus.CANCELLED)
+    }
+
+    fun complete(bookingId: String) {
+        viewModelScope.launch {
+            val result = updateBookingStatusUseCase(bookingId, BookingStatus.COMPLETED)
+            if (result.isSuccess) {
+                _uiState.update { it.copy(selectedFilter = AgendaFilter.COMPLETED) }
+                load(showLoading = false)
+            } else {
+                _uiState.update { it.copy(message = AgendaMessage.ActionFailed) }
+            }
+        }
     }
 
     fun onMessageShown() {
@@ -103,11 +116,14 @@ class AgendaViewModel(
     }
 
     companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
+        fun factory(
+            initialFilter: AgendaFilter = AgendaFilter.ACCEPTED,
+        ): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 AgendaViewModel(
                     getBookingsUseCase = AppContainer.getBookingsUseCase,
                     updateBookingStatusUseCase = AppContainer.updateBookingStatusUseCase,
+                    initialFilter = initialFilter,
                 )
             }
         }

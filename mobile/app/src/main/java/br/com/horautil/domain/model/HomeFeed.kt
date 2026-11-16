@@ -30,6 +30,7 @@ data class HomeMatch(
     val teaches: String,
     val wants: String,
     val matchPercent: Int,
+    val rating: String,
     val palette: HomePalette,
 )
 

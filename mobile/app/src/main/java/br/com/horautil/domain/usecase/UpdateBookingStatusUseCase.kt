@@ -13,6 +13,7 @@ class UpdateBookingStatusUseCase(
             BookingStatus.ACCEPTED -> booking.status == BookingStatus.PENDING
             BookingStatus.DECLINED -> booking.status == BookingStatus.PENDING
             BookingStatus.CANCELLED -> booking.status == BookingStatus.ACCEPTED
+            BookingStatus.COMPLETED -> booking.status == BookingStatus.ACCEPTED
             else -> false
         }
         if (!allowed) {

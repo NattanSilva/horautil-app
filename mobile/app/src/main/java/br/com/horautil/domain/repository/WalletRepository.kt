@@ -4,5 +4,6 @@ import br.com.horautil.domain.model.WalletSummary
 
 interface WalletRepository {
     suspend fun getSummary(): Result<WalletSummary>
-    suspend fun addReviewBonus(bookingId: String): Result<Unit>
+    suspend fun settleLesson(bookingId: String, title: String, hours: Double): Result<Unit>
+    suspend fun grantWelcomeBonus(): Result<Unit>
 }

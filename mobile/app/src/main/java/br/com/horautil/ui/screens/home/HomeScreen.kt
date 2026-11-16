@@ -25,6 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.horautil.R
@@ -53,6 +55,10 @@ fun HomeRoute(
     val snackbarHostState = remember { SnackbarHostState() }
     val messageText = state.message?.toHomeMessageText()
 
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.refresh()
+    }
+
     LaunchedEffect(state.message) {
         if (messageText != null) {
             snackbarHostState.showSnackbar(messageText)
@@ -64,7 +70,7 @@ fun HomeRoute(
         state = state,
         snackbarHostState = snackbarHostState,
         onSearchQueryChange = viewModel::onSearchQueryChange,
-        onAvatarClick = viewModel::onComingSoon,
+        onAvatarClick = { onDestinationSelected(HomeDestination.PROFILE) },
         onNotificationsClick = viewModel::onComingSoon,
         onCategoryClick = viewModel::onComingSoon,
         onMatchClick = { match -> onMatchClick(match.id) },

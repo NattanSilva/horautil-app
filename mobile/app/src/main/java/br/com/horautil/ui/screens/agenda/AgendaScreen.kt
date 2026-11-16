@@ -75,7 +75,10 @@ fun AgendaRoute(
     onDestinationSelected: (HomeDestination) -> Unit,
     onFabClick: () -> Unit,
     onReviewClick: (String) -> Unit,
-    viewModel: AgendaViewModel = viewModel(factory = AgendaViewModel.Factory),
+    initialFilter: AgendaFilter = AgendaFilter.ACCEPTED,
+    viewModel: AgendaViewModel = viewModel(
+        factory = AgendaViewModel.factory(initialFilter),
+    ),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -99,6 +102,7 @@ fun AgendaRoute(
         onAccept = viewModel::accept,
         onDecline = viewModel::decline,
         onCancel = viewModel::cancel,
+        onComplete = viewModel::complete,
         onReviewClick = onReviewClick,
         onDestinationSelected = onDestinationSelected,
         onFabClick = onFabClick,
@@ -113,6 +117,7 @@ fun AgendaScreen(
     onAccept: (String) -> Unit,
     onDecline: (String) -> Unit,
     onCancel: (String) -> Unit,
+    onComplete: (String) -> Unit,
     onReviewClick: (String) -> Unit,
     onDestinationSelected: (HomeDestination) -> Unit,
     onFabClick: () -> Unit,
@@ -196,6 +201,7 @@ fun AgendaScreen(
                                     onAccept = { onAccept(booking.id) },
                                     onDecline = { onDecline(booking.id) },
                                     onCancel = { onCancel(booking.id) },
+                                    onComplete = { onComplete(booking.id) },
                                     onReview = { onReviewClick(booking.id) },
                                 )
                             }
@@ -271,6 +277,7 @@ private fun BookingCard(
     onAccept: () -> Unit,
     onDecline: () -> Unit,
     onCancel: () -> Unit,
+    onComplete: () -> Unit,
     onReview: () -> Unit,
 ) {
     val shape = RoundedCornerShape(HoraUtilDimens.ScheduleCardCorner)
@@ -340,6 +347,7 @@ private fun BookingCard(
                 onAccept = onAccept,
                 onDecline = onDecline,
                 onCancel = onCancel,
+                onComplete = onComplete,
                 onReview = onReview,
             )
         }
@@ -352,6 +360,7 @@ private fun BookingActions(
     onAccept: () -> Unit,
     onDecline: () -> Unit,
     onCancel: () -> Unit,
+    onComplete: () -> Unit,
     onReview: () -> Unit,
 ) {
     Row(horizontalArrangement = Arrangement.spacedBy(HoraUtilDimens.Space1)) {
@@ -372,6 +381,12 @@ private fun BookingActions(
             }
 
             BookingStatus.ACCEPTED -> {
+                ActionChip(
+                    label = stringResource(R.string.schedule_action_complete),
+                    background = IconGreenBg,
+                    contentColor = IconGreen,
+                    onClick = onComplete,
+                )
                 ActionChip(
                     label = stringResource(R.string.schedule_action_cancel),
                     background = Page,

@@ -6,10 +6,9 @@ import br.com.horautil.domain.model.WalletSummary
 import br.com.horautil.domain.repository.WalletRepository
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 import kotlinx.coroutines.flow.MutableStateFlow
 
-private const val REVIEW_BONUS_HOURS = 0.5
+private const val WELCOME_BONUS_HOURS = 2.0
 
 class InMemoryWalletRepository : WalletRepository {
 
@@ -46,26 +45,55 @@ class InMemoryWalletRepository : WalletRepository {
         ),
     )
 
-    private val reviewBonuses = mutableSetOf<String>()
+    private val settledLessons = mutableSetOf<String>()
+    private var welcomeBonusGranted = false
 
     override suspend fun getSummary(): Result<WalletSummary> = Result.success(summary.value)
 
-    override suspend fun addReviewBonus(bookingId: String): Result<Unit> {
-        if (!reviewBonuses.add(bookingId)) return Result.success(Unit)
+    override suspend fun settleLesson(
+        bookingId: String,
+        title: String,
+        hours: Double,
+    ): Result<Unit> {
+        if (!settledLessons.add(bookingId)) return Result.success(Unit)
+        if (hours <= 0) return Result.failure(IllegalArgumentException("Horas inválidas"))
 
-        val today = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+        val entry = WalletEntry(
+            id = "lesson-$bookingId",
+            title = title,
+            dateLabel = today(),
+            amountHours = -hours,
+            type = WalletEntryType.RECEIVED,
+        )
+        val current = summary.value
+        summary.value = current.copy(
+            availableHours = (current.availableHours - hours).coerceAtLeast(0.0),
+            receivedHours = current.receivedHours + hours,
+            entries = listOf(entry) + current.entries,
+        )
+        return Result.success(Unit)
+    }
+
+    override suspend fun grantWelcomeBonus(): Result<Unit> {
+        if (welcomeBonusGranted) return Result.success(Unit)
+        welcomeBonusGranted = true
+
         val bonus = WalletEntry(
-            id = "bonus-$bookingId",
-            title = "Bônus de avaliação",
-            dateLabel = today,
-            amountHours = REVIEW_BONUS_HOURS,
+            id = "entry-welcome-bonus",
+            title = "Bônus de boas-vindas",
+            dateLabel = today(),
+            amountHours = WELCOME_BONUS_HOURS,
             type = WalletEntryType.BONUS,
         )
         val current = summary.value
         summary.value = current.copy(
-            availableHours = current.availableHours + REVIEW_BONUS_HOURS,
+            availableHours = current.availableHours + WELCOME_BONUS_HOURS,
+            weeklyDeltaHours = current.weeklyDeltaHours + WELCOME_BONUS_HOURS,
             entries = listOf(bonus) + current.entries,
         )
         return Result.success(Unit)
     }
+
+    private fun today(): String =
+        LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
 }

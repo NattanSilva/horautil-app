@@ -136,4 +136,16 @@
     <string name="review_star_description">Nota %1$d</string>
     <string name="review_submit_failed">Não foi possível enviar a avaliação. Tente novamente.</string>
     <string name="review_load_failed">Não foi possível carregar a aula.</string>
+
+    <string name="home_match_rating_desc">Nota %1$s</string>
+    <string name="schedule_action_complete">Concluir</string>
+
+    <string name="profile_title">Meu perfil</string>
+    <string name="profile_meta">★ %1$s • %2$d aulas</string>
+    <string name="profile_member_since">Membro desde %1$s</string>
+    <string name="profile_about_title">Sobre</string>
+    <string name="profile_teaches_title">Ensina</string>
+    <string name="profile_wants_title">Quer aprender</string>
+    <string name="profile_balance_label">Saldo disponível</string>
+    <string name="profile_wallet_action">Ver carteira</string>
 </resources>
