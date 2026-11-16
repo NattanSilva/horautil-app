@@ -78,3 +78,15 @@ val HoraUtilTypography = Typography(
         fontSize = 12.sp,
     ),
 )
+
+val HoraUtilCaption = TextStyle(
+    fontFamily = Inter,
+    fontWeight = FontWeight.Bold,
+    fontSize = 11.sp,
+)
+
+val HoraUtilOnboardingTitle = TextStyle(
+    fontFamily = Inter,
+    fontWeight = FontWeight.Bold,
+    fontSize = 24.sp,
+)

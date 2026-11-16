@@ -49,6 +49,7 @@ fun LoginRoute(
     registerSuccess: Boolean,
     onRegisterSuccessShown: () -> Unit,
     onRegisterClick: () -> Unit,
+    onLoginSuccess: () -> Unit,
     viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -67,6 +68,13 @@ fun LoginRoute(
         if (registerSuccess) {
             onRegisterSuccessShown()
             snackbarHostState.showSnackbar(registerSuccessMessage)
+        }
+    }
+
+    LaunchedEffect(state.loginSucceeded) {
+        if (state.loginSucceeded) {
+            viewModel.onLoginHandled()
+            onLoginSuccess()
         }
     }
 

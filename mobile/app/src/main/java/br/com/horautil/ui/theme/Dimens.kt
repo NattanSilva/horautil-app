@@ -60,4 +60,77 @@ object HoraUtilDimens {
     val ButtonVerticalPadding = 15.dp
     val LoadingIndicatorSize = 22.dp
     val LoadingIndicatorStroke = 2.dp
+
+    val HomeHeaderHorizontalPadding = 20.dp
+    val HomeHeaderTopPadding = 20.dp
+    val HomeHeaderBottomPadding = 26.dp
+    val HomeHeaderGap = 12.dp
+    val HomeHeaderTitlesGap = 2.dp
+    val HomeAvatarSize = 44.dp
+    val HomeAvatarCorner = 22.dp
+    val HomeAvatarTouchTarget = 48.dp
+    val HomeAvatarGap = 8.dp
+    val HomeBellVisualSize = 42.dp
+    val HomeBellCorner = 21.dp
+    val HomeBellIconSize = 20.dp
+
+    val HomeBodyTopPadding = 24.dp
+    val HomeBodyHorizontalPadding = 20.dp
+    val HomeBodyBottomPadding = 16.dp
+    val HomeBodyGap = 18.dp
+
+    val HomeSearchHeight = 46.dp
+    val HomeSearchCorner = 16.dp
+    val HomeSearchHorizontalPadding = 16.dp
+    val HomeSearchIconGap = 10.dp
+    val HomeSearchIconSize = 20.dp
+
+    val HomeCategoryGridGap = 12.dp
+    val HomeCategoryIconBgSize = 52.dp
+    val HomeCategoryIconBgCorner = 18.dp
+    val HomeCategoryIconSize = 24.dp
+    val HomeCategoryLabelGap = 6.dp
+
+    val HomeMatchCardCorner = 18.dp
+    val HomeMatchCardPadding = 14.dp
+    val HomeMatchCardGap = 12.dp
+    val HomeMatchCardShadowElevation = 4.dp
+    val HomeMatchAvatarSize = 50.dp
+    val HomeMatchAvatarCorner = 25.dp
+    val HomeMatchInfoGap = 4.dp
+    val HomeMatchBadgeCorner = 12.dp
+    val HomeMatchBadgeHorizontalPadding = 10.dp
+    val HomeMatchBadgeVerticalPadding = 4.dp
+
+    val HomeBottomNavHeight = 72.dp
+    val HomeBottomNavHorizontalPadding = 8.dp
+    val HomeBottomNavTabPadding = 8.dp
+    val HomeBottomNavTabGap = 2.dp
+    val HomeBottomNavIconSize = 22.dp
+    val HomeFabSpace = 56.dp
+    val HomeFabRingSize = 64.dp
+    val HomeFabSize = 56.dp
+    val HomeFabCorner = 28.dp
+    val HomeFabIconSize = 26.dp
+    val HomeFabRingOffset = (-18).dp
+    val HomeFabOffset = (-14).dp
+    val HomeFabShadowElevation = 6.dp
+
+    val OnboardingHeaderHorizontalPadding = 24.dp
+    val OnboardingHeaderTopPadding = 20.dp
+    val OnboardingHeaderBottomPadding = 30.dp
+    val OnboardingHeaderGap = 6.dp
+    val OnboardingBodyTopPadding = 24.dp
+    val OnboardingBodyHorizontalPadding = 24.dp
+    val OnboardingBodyBottomPadding = 20.dp
+    val OnboardingBodyGap = 20.dp
+    val OnboardingSectionGap = 10.dp
+    val OnboardingChipHeight = 32.dp
+    val OnboardingChipCorner = 14.dp
+    val OnboardingChipHorizontalPadding = 14.dp
+    val OnboardingChipPeriodHorizontalPadding = 16.dp
+    val OnboardingChipVerticalPadding = 8.dp
+    val OnboardingChipGap = 8.dp
+    val OnboardingDaySize = 38.dp
+    val OnboardingDayCorner = 19.dp
 }

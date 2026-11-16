@@ -22,6 +22,7 @@ data class LoginUiState(
     val emailError: AuthFieldError? = null,
     val passwordError: AuthFieldError? = null,
     val isSubmitting: Boolean = false,
+    val loginSucceeded: Boolean = false,
     val message: AuthUiMessage? = null,
 )
 
@@ -57,6 +58,10 @@ class LoginViewModel(
         _uiState.update { it.copy(message = null) }
     }
 
+    fun onLoginHandled() {
+        _uiState.update { it.copy(loginSucceeded = false) }
+    }
+
     fun submit() {
         val current = _uiState.value
         val emailError = validateEmail(current.email)
@@ -79,8 +84,9 @@ class LoginViewModel(
             _uiState.update {
                 it.copy(
                     isSubmitting = false,
+                    loginSucceeded = result.isSuccess,
                     message = if (result.isSuccess) {
-                        AuthUiMessage.LoginSuccess
+                        null
                     } else {
                         AuthUiMessage.LoginFailed
                     },

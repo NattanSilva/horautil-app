@@ -7,6 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.com.horautil.ui.screens.auth.LoginRoute
 import br.com.horautil.ui.screens.auth.RegisterRoute
+import br.com.horautil.ui.screens.home.HomeRoute
+import br.com.horautil.ui.screens.onboarding.OnboardingRoute
 
 @Composable
 fun AppNavHost() {
@@ -28,6 +30,11 @@ fun AppNavHost() {
                     entry.savedStateHandle[AuthRoutes.RegisterSuccessKey] = false
                 },
                 onRegisterClick = { navController.navigate(AuthRoutes.Register) },
+                onLoginSuccess = {
+                    navController.navigate(HomeRoutes.Home) {
+                        popUpTo(AuthRoutes.Login) { inclusive = true }
+                    }
+                },
             )
         }
 
@@ -36,12 +43,25 @@ fun AppNavHost() {
                 onBack = { navController.popBackStack() },
                 onSignInClick = { navController.popBackStack() },
                 onRegistrationSuccess = {
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set(AuthRoutes.RegisterSuccessKey, true)
-                    navController.popBackStack()
+                    navController.navigate(OnboardingRoutes.Onboarding) {
+                        popUpTo(AuthRoutes.Login) { inclusive = true }
+                    }
                 },
             )
+        }
+
+        composable(OnboardingRoutes.Onboarding) {
+            OnboardingRoute(
+                onOnboardingComplete = {
+                    navController.navigate(HomeRoutes.Home) {
+                        popUpTo(OnboardingRoutes.Onboarding) { inclusive = true }
+                    }
+                },
+            )
+        }
+
+        composable(HomeRoutes.Home) {
+            HomeRoute()
         }
     }
 }

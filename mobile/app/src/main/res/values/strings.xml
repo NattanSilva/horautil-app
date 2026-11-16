@@ -50,4 +50,32 @@
     <string name="register_failed">Não foi possível criar sua conta. Tente novamente.</string>
     <string name="forgot_password_unavailable">Recuperação de senha estará disponível em breve.</string>
     <string name="social_login_unavailable">Login com %1$s estará disponível em breve.</string>
+
+    <string name="nav_explore">Explorar</string>
+    <string name="nav_schedule">Agenda</string>
+    <string name="nav_wallet">Carteira</string>
+    <string name="nav_profile">Perfil</string>
+
+    <string name="home_greeting">Olá, %1$s 👋</string>
+    <string name="home_title">Explorar</string>
+    <string name="home_balance">Saldo %1$s</string>
+    <string name="home_open_profile">Abrir perfil</string>
+    <string name="home_notifications">Notificações</string>
+    <string name="home_search_placeholder">Buscar habilidades, pessoas…</string>
+    <string name="home_categories_title">Categorias</string>
+    <string name="home_matches_title">Matches compatíveis</string>
+    <string name="home_match_badge">%1$d%% match</string>
+    <string name="home_match_subtitle">Ensina %1$s · quer %2$s</string>
+    <string name="home_empty_state">Nenhum resultado encontrado para essa busca.</string>
+    <string name="home_coming_soon">Disponível em breve.</string>
+    <string name="home_new_session">Nova sessão</string>
+
+    <string name="onboarding_step">Passo %1$d de %2$d</string>
+    <string name="onboarding_title">Monte seu perfil</string>
+    <string name="onboarding_subtitle">Conte o que você ensina e quer aprender.</string>
+    <string name="onboarding_teach_label">Habilidades que ensino</string>
+    <string name="onboarding_learn_label">Quero aprender</string>
+    <string name="onboarding_availability_label">Disponibilidade</string>
+    <string name="onboarding_cta">Concluir onboarding</string>
+    <string name="onboarding_error">Não foi possível concluir. Tente novamente.</string>
 </resources>
